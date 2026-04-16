@@ -1,10 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "./supabase";
 import "./App.css";
 
 function App() {
   const [seccion, setSeccion] = useState("perfil");
   const [prendas, setPrendas] = useState([]);
   const [estilos, setEstilos] = useState(["Casual", "Minimalista"]);
+  const [cargando, setCargando] = useState(false);
+
+  useEffect(() => {
+    cargarPrendas();
+  }, []);
+
+  const cargarPrendas = async () => {
+    const { data, error } = await supabase
+      .from("prendas")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (!error && data) setPrendas(data);
+  };
 
   const toggleEstilo = (estilo) => {
     if (estilos.includes(estilo)) {
@@ -14,17 +28,38 @@ function App() {
     }
   };
 
-  const añadirPrenda = (e) => {
+  const añadirPrenda = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setPrendas([...prendas, { url, nombre: file.name }]);
+    setCargando(true);
+
+    const nombreArchivo = `${Date.now()}_${file.name}`;
+    const { error: uploadError } = await supabase.storage
+      .from("prendas")
+      .upload(nombreArchivo, file);
+
+    if (uploadError) {
+      console.error("Error subiendo foto:", uploadError);
+      setCargando(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage
+      .from("prendas")
+      .getPublicUrl(nombreArchivo);
+
+    const { error: dbError } = await supabase
+      .from("prendas")
+      .insert({ foto_url: urlData.publicUrl, tipo: "sin clasificar" });
+
+    if (!dbError) await cargarPrendas();
+    setCargando(false);
   };
 
   return (
     <div className="app">
       <div className="header">
-        <span className="logo">Vestidor</span>
+        <span className="logo">CloudSet</span>
       </div>
 
       <div className="nav">
@@ -64,13 +99,16 @@ function App() {
           <div className="card">
             <h2>Mi armario</h2>
             <label className="upload-btn">
-              + Añadir prenda
+              {cargando ? "Subiendo..." : "+ Añadir prenda"}
               <input type="file" accept="image/*" onChange={añadirPrenda} hidden />
             </label>
+            {prendas.length === 0 && (
+              <p>Aún no tienes prendas. ¡Añade la primera!</p>
+            )}
             <div className="grid">
-              {prendas.map((p, i) => (
-                <div key={i} className="grid-item">
-                  <img src={p.url} alt={p.nombre} />
+              {prendas.map((p) => (
+                <div key={p.id} className="grid-item">
+                  <img src={p.foto_url} alt="prenda" />
                 </div>
               ))}
             </div>
