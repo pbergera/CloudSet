@@ -6,7 +6,7 @@ import "./App.css";
 function App() {
   const [seccion, setSeccion] = useState("perfil");
   const [prendas, setPrendas] = useState([]);
-  const [estilos, setEstilos] = useState(["Casual", "Minimalista"]);
+  const [estilos, setEstilos] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [usuario, setUsuario] = useState(null);
   const [cargandoSesion, setCargandoSesion] = useState(true);
@@ -23,9 +23,12 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (usuario) cargarPrendas();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [usuario]);
+  if (usuario) {
+    cargarPrendas();
+    cargarPerfil();
+  }
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [usuario]);
 
   const cargarPrendas = async () => {
     const { data, error } = await supabase
@@ -36,13 +39,28 @@ function App() {
     if (!error && data) setPrendas(data);
   };
 
+  const cargarPerfil = async () => {
+  const { data } = await supabase
+    .from("usuarios")
+    .select("estilos")
+    .eq("id", usuario.id)
+    .single();
+  if (data?.estilos) setEstilos(data.estilos);
+};
+
+const guardarEstilos = async (nuevosEstilos) => {
+  await supabase
+    .from("usuarios")
+    .upsert({ id: usuario.id, estilos: nuevosEstilos });
+};
+
   const toggleEstilo = (estilo) => {
-    if (estilos.includes(estilo)) {
-      setEstilos(estilos.filter((e) => e !== estilo));
-    } else {
-      setEstilos([...estilos, estilo]);
-    }
-  };
+  const nuevos = estilos.includes(estilo)
+    ? estilos.filter((e) => e !== estilo)
+    : [...estilos, estilo];
+  setEstilos(nuevos);
+  guardarEstilos(nuevos);
+};
 
   const añadirPrenda = async (e) => {
     const file = e.target.files[0];
