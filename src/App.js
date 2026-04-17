@@ -24,6 +24,7 @@ function App() {
 
   useEffect(() => {
     if (usuario) cargarPrendas();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario]);
 
   const cargarPrendas = async () => {
