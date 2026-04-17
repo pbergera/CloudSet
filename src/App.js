@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
+import Login from "./Login";
 import "./App.css";
 
 function App() {
@@ -7,15 +8,29 @@ function App() {
   const [prendas, setPrendas] = useState([]);
   const [estilos, setEstilos] = useState(["Casual", "Minimalista"]);
   const [cargando, setCargando] = useState(false);
+  const [usuario, setUsuario] = useState(null);
+  const [cargandoSesion, setCargandoSesion] = useState(true);
 
   useEffect(() => {
-    cargarPrendas();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUsuario(session?.user ?? null);
+      setCargandoSesion(false);
+    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUsuario(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (usuario) cargarPrendas();
+  }, [usuario]);
 
   const cargarPrendas = async () => {
     const { data, error } = await supabase
       .from("prendas")
       .select("*")
+      .eq("usuario_id", usuario.id)
       .order("created_at", { ascending: false });
     if (!error && data) setPrendas(data);
   };
@@ -33,7 +48,7 @@ function App() {
     if (!file) return;
     setCargando(true);
 
-    const nombreArchivo = `${Date.now()}_${file.name}`;
+    const nombreArchivo = `${usuario.id}/${Date.now()}_${file.name}`;
     const { error: uploadError } = await supabase.storage
       .from("prendas")
       .upload(nombreArchivo, file);
@@ -50,16 +65,27 @@ function App() {
 
     const { error: dbError } = await supabase
       .from("prendas")
-      .insert({ foto_url: urlData.publicUrl, tipo: "sin clasificar" });
+      .insert({ foto_url: urlData.publicUrl, tipo: "sin clasificar", usuario_id: usuario.id });
 
     if (!dbError) await cargarPrendas();
     setCargando(false);
   };
 
+  const cerrarSesion = async () => {
+    await supabase.auth.signOut();
+    setPrendas([]);
+  };
+
+  if (cargandoSesion) return <div className="app"><p style={{padding:"2rem", color:"#888"}}>Cargando...</p></div>;
+  if (!usuario) return <Login onLogin={() => {}} />;
+
   return (
     <div className="app">
       <div className="header">
         <span className="logo">CloudSet</span>
+        <button onClick={cerrarSesion} style={{ fontSize: "12px", color: "#888", background: "none", border: "none", cursor: "pointer" }}>
+          Cerrar sesión
+        </button>
       </div>
 
       <div className="nav">
@@ -78,6 +104,7 @@ function App() {
         <div className="seccion">
           <div className="card">
             <h2>Tu perfil de estilo</h2>
+            <p style={{fontSize:"12px", color:"#aaa", marginBottom:"8px"}}>{usuario.email}</p>
             <p>Selecciona los estilos con los que te identificas:</p>
             <div className="tags">
               {["Casual", "Minimalista", "Clásico", "Boho", "Deportivo", "Formal"].map((e) => (
