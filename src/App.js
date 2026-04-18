@@ -87,6 +87,40 @@ const seleccionarFoto = (e) => {
   setPrendaPrevia({ file, url });
   setTipoPrenda("");
   setColorPrenda("");
+  analizarPrendaConIA(file);
+};
+
+const analizarPrendaConIA = async (file) => {
+  const reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = async () => {
+    const base64 = reader.result.split(",")[1];
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.REACT_APP_GEMINI_KEY}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: "Analiza esta prenda de ropa. Responde SOLO en formato JSON con estos campos: tipo (uno de: camiseta, camisa, pantalon, vestido, falda, chaqueta, abrigo, zapatos, zapatillas, accesorio, otro), color (color principal en español, una palabra). Ejemplo: {\"tipo\":\"camiseta\",\"color\":\"azul\"}" },
+                { inline_data: { mime_type: file.type, data: base64 } }
+              ]
+            }]
+          })
+        }
+      );
+      const data = await response.json();
+      const texto = data.candidates[0].content.parts[0].text;
+      const limpio = texto.replace(/```json|```/g, "").trim();
+      const resultado = JSON.parse(limpio);
+      if (resultado.tipo) setTipoPrenda(resultado.tipo);
+      if (resultado.color) setColorPrenda(resultado.color);
+    } catch (error) {
+      console.error("Error analizando con IA:", error);
+    }
+  };
 };
 
 const guardarPrenda = async () => {

@@ -17,7 +17,8 @@
 - Revisar textos explicativos en secciones que los han perdido
 - Prendas antiguas muestran "sin color"
 - Eliminar prendas y outfits
-- Editar prendas (cambiar tipo, color)
+- Editar prendas (cambiar tipo, color, notas)
+- Ampliar categorías: bolsos, cinturones, sombreros, joyería, bufandas, gafas
 - Outfits en viajes: mostrar miniatura en lugar de solo el nombre
 - Outfits en viajes: organizar por tipo de plan (día, noche, cena, playa...)
 
