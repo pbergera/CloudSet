@@ -11,6 +11,9 @@ function App() {
   const [cargando, setCargando] = useState(false);
   const [usuario, setUsuario] = useState(null);
   const [cargandoSesion, setCargandoSesion] = useState(true);
+  const [prendaPrevia, setPrendaPrevia] = useState(null);
+  const [tipoPrenda, setTipoPrenda] = useState("");
+  const [colorPrenda, setColorPrenda] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -63,33 +66,49 @@ const guardarEstilos = async (nuevosEstilos) => {
   guardarEstilos(nuevos);
 };
 
-  const añadirPrenda = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setCargando(true);
+const seleccionarFoto = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  setPrendaPrevia({ file, url });
+  setTipoPrenda("");
+  setColorPrenda("");
+};
 
-    const nombreArchivo = `${usuario.id}/${Date.now()}_${file.name}`;
-    const { error: uploadError } = await supabase.storage
-      .from("prendas")
-      .upload(nombreArchivo, file);
+const guardarPrenda = async () => {
+  if (!prendaPrevia) return;
+  setCargando(true);
 
-    if (uploadError) {
-      console.error("Error subiendo foto:", uploadError);
-      setCargando(false);
-      return;
-    }
+  const nombreArchivo = `${usuario.id}/${Date.now()}_${prendaPrevia.file.name}`;
+  const { error: uploadError } = await supabase.storage
+    .from("prendas")
+    .upload(nombreArchivo, prendaPrevia.file);
 
-    const { data: urlData } = supabase.storage
-      .from("prendas")
-      .getPublicUrl(nombreArchivo);
-
-    const { error: dbError } = await supabase
-      .from("prendas")
-      .insert({ foto_url: urlData.publicUrl, tipo: "sin clasificar", usuario_id: usuario.id });
-
-    if (!dbError) await cargarPrendas();
+  if (uploadError) {
+    console.error("Error subiendo foto:", uploadError);
     setCargando(false);
-  };
+    return;
+  }
+
+  const { data: urlData } = supabase.storage
+    .from("prendas")
+    .getPublicUrl(nombreArchivo);
+
+  const { error: dbError } = await supabase
+    .from("prendas")
+    .insert({
+      foto_url: urlData.publicUrl,
+      tipo: tipoPrenda || "sin clasificar",
+      color: colorPrenda || "sin color",
+      usuario_id: usuario.id
+    });
+
+  if (!dbError) {
+    await cargarPrendas();
+    setPrendaPrevia(null);
+  }
+  setCargando(false);
+};
 
   const cerrarSesion = async () => {
     await supabase.auth.signOut();
@@ -141,21 +160,48 @@ const guardarEstilos = async (nuevosEstilos) => {
         </div>
       )}
 
-      {seccion === "armario" && (
+{seccion === "armario" && (
         <div className="seccion">
           <div className="card">
             <h2>Mi armario</h2>
-            <label className="upload-btn">
-              {cargando ? "Subiendo..." : "+ Añadir prenda"}
-              <input type="file" accept="image/*" onChange={añadirPrenda} hidden />
-            </label>
-            {prendas.length === 0 && (
+            {!prendaPrevia ? (
+              <label className="upload-btn">
+                + Añadir prenda
+                <input type="file" accept="image/*" onChange={seleccionarFoto} hidden />
+              </label>
+            ) : (
+              <div>
+                <img src={prendaPrevia.url} alt="prenda" style={{ width: "100%", borderRadius: "8px", marginBottom: "12px" }} />
+                <select value={tipoPrenda} onChange={(e) => setTipoPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
+                  <option value="">Tipo de prenda...</option>
+                  <option value="camiseta">Camiseta</option>
+                  <option value="camisa">Camisa</option>
+                  <option value="pantalon">Pantalón</option>
+                  <option value="vestido">Vestido</option>
+                  <option value="falda">Falda</option>
+                  <option value="chaqueta">Chaqueta</option>
+                  <option value="abrigo">Abrigo</option>
+                  <option value="zapatos">Zapatos</option>
+                  <option value="zapatillas">Zapatillas</option>
+                  <option value="accesorio">Accesorio</option>
+                  <option value="otro">Otro</option>
+                </select>
+                <input type="text" placeholder="Color (ej: azul, negro...)" value={colorPrenda} onChange={(e) => setColorPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+                <button onClick={guardarPrenda} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>
+                  {cargando ? "Guardando..." : "Guardar prenda"}
+                </button>
+                <button onClick={() => setPrendaPrevia(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "16px" }}>
+                  Cancelar
+                </button>
+              </div>
+            )}
+            {prendas.length === 0 && !prendaPrevia && (
               <p>Aún no tienes prendas. ¡Añade la primera!</p>
             )}
             <div className="grid">
               {prendas.map((p) => (
                 <div key={p.id} className="grid-item">
-                  <img src={p.foto_url} alt="prenda" />
+                  <img src={p.foto_url} alt={p.tipo} />
                 </div>
               ))}
             </div>
