@@ -97,7 +97,7 @@ const analizarPrendaConIA = async (file) => {
     const base64 = reader.result.split(",")[1];
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${process.env.REACT_APP_GEMINI_KEY}`,
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-lite:generateContent?key=${process.env.REACT_APP_GEMINI_KEY}',
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
