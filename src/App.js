@@ -122,6 +122,13 @@ const guardarPrenda = async () => {
   setCargando(false);
 };
 
+const eliminarPrenda = async (id, foto_url) => {
+  const nombreArchivo = foto_url.split("/prendas/")[1];
+  await supabase.storage.from("prendas").remove([nombreArchivo]);
+  await supabase.from("prendas").delete().eq("id", id);
+  await cargarPrendas();
+};
+
   const cerrarSesion = async () => {
     await supabase.auth.signOut();
     setPrendas([]);
@@ -214,6 +221,12 @@ const guardarPrenda = async () => {
                   <div style={{ padding: "4px 6px", fontSize: "11px", color: "#888", textAlign: "center" }}>
                     <div style={{ fontWeight: "500", color: "#2c2c2a" }}>{p.tipo}</div>
                     <div>{p.color}</div>
+                  </div>
+                  <div
+                    onClick={() => eliminarPrenda(p.id, p.foto_url)}
+                    style={{ padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer", borderTop: "1px solid #f0ede6" }}
+                  >
+                    Eliminar
                   </div>
                 </div>
               ))}
