@@ -17,6 +17,8 @@ function App() {
   const [tipoPrenda, setTipoPrenda] = useState("");
   const [colorPrenda, setColorPrenda] = useState("");
   const [outfitsList, setOutfitsList] = useState([]);
+  const [filtroTipo, setFiltroTipo] = useState("");
+  const [filtroColor, setFiltroColor] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -180,6 +182,23 @@ const eliminarPrenda = async (id, foto_url) => {
         <div className="seccion">
           <div className="card">
             <h2>Mi armario</h2>
+           <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
+            <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} style={{ flex: 1, padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }}>
+              <option value="">Todos los tipos</option>
+              <option value="camiseta">Camiseta</option>
+              <option value="camisa">Camisa</option>
+              <option value="pantalon">Pantalón</option>
+              <option value="vestido">Vestido</option>
+              <option value="falda">Falda</option>
+              <option value="chaqueta">Chaqueta</option>
+              <option value="abrigo">Abrigo</option>
+              <option value="zapatos">Zapatos</option>
+              <option value="zapatillas">Zapatillas</option>
+              <option value="accesorio">Accesorio</option>
+              <option value="otro">Otro</option>
+            </select>
+            <input type="text" placeholder="Color..." value={filtroColor} onChange={(e) => setFiltroColor(e.target.value)} style={{ flex: 1, padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }} />
+          </div>
             {!prendaPrevia ? (
               <label className="upload-btn">
                 + Añadir prenda
@@ -215,7 +234,10 @@ const eliminarPrenda = async (id, foto_url) => {
               <p>Aún no tienes prendas. ¡Añade la primera!</p>
             )}
             <div className="grid">
-              {prendas.map((p) => (
+              {prendas
+                .filter(p => !filtroTipo || p.tipo === filtroTipo)
+                .filter(p => !filtroColor || p.color?.toLowerCase().includes(filtroColor.toLowerCase()))
+                .map((p) => (
                 <div key={p.id} className="grid-item">
                   <img src={p.foto_url} alt={p.tipo} />
                   <div style={{ padding: "4px 6px", fontSize: "11px", color: "#888", textAlign: "center" }}>
