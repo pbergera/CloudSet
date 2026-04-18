@@ -4,6 +4,7 @@ import Login from "./Login";
 import Perfil from "./Perfil";
 import "./App.css";
 import Outfits from "./Outfits";
+import Viajes from "./Viajes";
 
 function App() {
   const [seccion, setSeccion] = useState("perfil");
@@ -15,6 +16,7 @@ function App() {
   const [prendaPrevia, setPrendaPrevia] = useState(null);
   const [tipoPrenda, setTipoPrenda] = useState("");
   const [colorPrenda, setColorPrenda] = useState("");
+  const [outfitsList, setOutfitsList] = useState([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -28,12 +30,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-  if (usuario) {
-    cargarPrendas();
-    cargarPerfil();
-  }
-// eslint-disable-next-line react-hooks/exhaustive-deps
-}, [usuario]);
+    if (usuario) {
+      cargarPrendas();
+      cargarPerfil();
+      cargarOutfits();
+    }
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [usuario]);
 
   const cargarPrendas = async () => {
     const { data, error } = await supabase
@@ -51,6 +54,14 @@ function App() {
     .eq("id", usuario.id)
     .single();
   if (data?.estilos) setEstilos(data.estilos);
+};
+
+const cargarOutfits = async () => {
+  const { data, error } = await supabase
+    .from("outfits")
+    .select("*")
+    .eq("usuario_id", usuario.id);
+  if (!error && data) setOutfitsList(data);
 };
 
 const guardarEstilos = async (nuevosEstilos) => {
@@ -218,14 +229,10 @@ const guardarPrenda = async () => {
         <Outfits usuario={usuario} prendas={prendas} />
       )}
 
-      {seccion === "viajes" && (
-        <div className="seccion">
-          <div className="card">
-            <h2>Viajes y eventos</h2>
-            <p>Planifica tu maleta para cada viaje o evento.</p>
-          </div>
-        </div>
+    {seccion === "viajes" && (
+        <Viajes usuario={usuario} outfits={outfitsList} />
       )}
+
     {seccion === "cuenta" && (
         <Perfil usuario={usuario} onCerrarSesion={cerrarSesion} />
       )}
