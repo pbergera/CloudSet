@@ -110,14 +110,15 @@ body {
 }
 
 .grid-item {
-  aspect-ratio: 1;
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid #e0ddd6;
+  display: flex;
+  flex-direction: column;
 }
 
 .grid-item img {
   width: 100%;
-  height: 100%;
+  aspect-ratio: 1;
   object-fit: cover;
 }

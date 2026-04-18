@@ -202,6 +202,10 @@ const guardarPrenda = async () => {
               {prendas.map((p) => (
                 <div key={p.id} className="grid-item">
                   <img src={p.foto_url} alt={p.tipo} />
+                  <div style={{ padding: "4px 6px", fontSize: "11px", color: "#888", textAlign: "center" }}>
+                    <div style={{ fontWeight: "500", color: "#2c2c2a" }}>{p.tipo}</div>
+                    <div>{p.color}</div>
+                  </div>
                 </div>
               ))}
             </div>
