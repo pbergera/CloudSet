@@ -14,15 +14,25 @@
 ## 🔧 Retoques pendientes
 - Quitar botón "Cerrar sesión" del header (ya está en página Cuenta)
 - Revisar textos explicativos en secciones que los han perdido
-- Prendas antiguas muestran "sin color" — ya se arreglará solas con nuevas subidas
+- Prendas antiguas muestran "sin color" — se arreglará con nuevas subidas
+- Eliminar prendas y outfits
+- Editar prendas (cambiar tipo, color)
 
 ## 🚀 Funcionalidades por desarrollar
 - Viajes y maletas: planificar outfits para un viaje por días
 - IA para reconocer prendas automáticamente (Gemini, gratis)
+- Escanear etiqueta para identificar la prenda original
 - Fotos de perfil: cara y cuerpo entero
 - Filtros en el armario por tipo y color
-- Eliminar prendas y outfits
-- Editar prendas (cambiar tipo, color)
+- Compartir prendas entre amigas
+- Recomendaciones de nuevas prendas enlazadas a tiendas
+- Monetización con códigos de afiliado en recomendaciones
+
+## 💡 Ideas futuras
+- Lookbook compartido / comunidad
+- Estadísticas de uso del armario (qué prendas usas más)
+- Alertas de rebajas en prendas similares a las tuyas
+- Versión nativa iOS/Android (Capacitor)
 
 ## 📱 Técnico pendiente
 - Mover carpeta del proyecto fuera de OneDrive (Windows trabajo)
