@@ -112,6 +112,11 @@ const analizarPrendaConIA = async (file) => {
         }
       );
       const data = await response.json();
+      console.log("Respuesta Gemini:", JSON.stringify(data));
+      if (!data.candidates || !data.candidates[0]) {
+        console.error("Sin candidatos en respuesta:", data);
+        return;
+      }
       const texto = data.candidates[0].content.parts[0].text;
       const limpio = texto.replace(/```json|```/g, "").trim();
       const resultado = JSON.parse(limpio);
