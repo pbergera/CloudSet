@@ -3,6 +3,7 @@ import { supabase } from "./supabase";
 import Login from "./Login";
 import Perfil from "./Perfil";
 import "./App.css";
+import Outfits from "./Outfits";
 
 function App() {
   const [seccion, setSeccion] = useState("perfil");
@@ -214,12 +215,7 @@ const guardarPrenda = async () => {
       )}
 
       {seccion === "outfits" && (
-        <div className="seccion">
-          <div className="card">
-            <h2>Mis outfits</h2>
-            <p>Aquí podrás crear y guardar combinaciones de tu armario.</p>
-          </div>
-        </div>
+        <Outfits usuario={usuario} prendas={prendas} />
       )}
 
       {seccion === "viajes" && (
