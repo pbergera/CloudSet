@@ -134,9 +134,6 @@ const guardarPrenda = async () => {
     <div className="app">
       <div className="header">
         <span className="logo">CloudSet</span>
-        <button onClick={cerrarSesion} style={{ fontSize: "12px", color: "#888", background: "none", border: "none", cursor: "pointer" }}>
-          Cerrar sesión
-        </button>
       </div>
 
       <div className="nav">
