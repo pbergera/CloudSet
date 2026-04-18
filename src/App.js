@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 import Login from "./Login";
+import Perfil from "./Perfil";
 import "./App.css";
 
 function App() {
@@ -108,7 +109,7 @@ const guardarEstilos = async (nuevosEstilos) => {
       </div>
 
       <div className="nav">
-        {["perfil", "armario", "outfits", "viajes"].map((s) => (
+      {["perfil", "armario", "outfits", "viajes", "cuenta"].map((s) => (
           <button
             key={s}
             className={`nav-btn ${seccion === s ? "active" : ""}`}
@@ -178,6 +179,9 @@ const guardarEstilos = async (nuevosEstilos) => {
             <p>Planifica tu maleta para cada viaje o evento.</p>
           </div>
         </div>
+      )}
+    {seccion === "cuenta" && (
+        <Perfil usuario={usuario} onCerrarSesion={cerrarSesion} />
       )}
     </div>
   );
