@@ -18,8 +18,6 @@ function App() {
   const [tipoPrenda, setTipoPrenda] = useState("");
   const [colorPrenda, setColorPrenda] = useState("");
   const [outfitsList, setOutfitsList] = useState([]);
-  const [filtroTipo, setFiltroTipo] = useState("");
-  const [filtroColor, setFiltroColor] = useState("");
   const [prendaEditando, setPrendaEditando] = useState(null);
   const [tipoEditado, setTipoEditado] = useState("");
   const [colorEditado, setColorEditado] = useState("");
