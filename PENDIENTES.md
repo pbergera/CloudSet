@@ -1,55 +1,134 @@
-# CloudSet - Pendientes y funcionalidades
+# CloudSet - Hoja de ruta
 
-## ✅ Completado
-- App React creada y publicada en Vercel
-- Base de datos Supabase con tablas: usuarios, prendas, outfits, viajes
+---
+
+## 🗄️ BACKEND & BASE DE DATOS
+
+### ✅ Hecho
+- Supabase configurado con tablas: usuarios, prendas, outfits, viajes
 - Login y registro de usuarios
-- Cada usuario ve solo sus prendas
-- Clasificar prendas al subir (tipo y color)
-- Tipo y color visible debajo de cada foto
-- Estilos de perfil guardados por usuario
-- Página de Cuenta (nombre, contraseña, cerrar sesión)
-- Outfits: crear, asignar a evento y momento, guardar y ver
-- Viajes: crear con destino, fechas validadas y outfits asignados
-- Eliminar prendas, outfits y viajes
-- Filtros en el armario por tipo y color
-- IA con Gemini 2.5 Flash para reconocer tipo y color automáticamente
-- Editar prendas (tipo y color)
-- Miniaturas de prendas en outfits dentro de viajes
-- Miniaturas al seleccionar outfits en viajes
-- Outfits se refrescan automáticamente al entrar en viajes
-- Fotos de perfil: cara y cuerpo entero
-- Categorías ampliadas con grupos (Armario / Zapatos & Accesorios)
-- Textos explicativos en todas las secciones
-- Prendas sin color muestran guión en lugar de "sin color"
+- Cada usuario ve solo sus datos
+- Storage buckets: prendas y perfiles
+- Políticas de acceso configuradas
+- Columnas: estilos, foto_cara, foto_cuerpo, momento en outfits
+- RLS activado en tabla viajes
 
-## 🔧 Retoques pendientes
-- Vista de maleta: miniatura visual de todas las prendas del viaje
-- Outfits en viajes: organizar por tipo de plan dentro del viaje
-- Editar nombre y datos de un viaje ya creado
-- Editar nombre y datos de un outfit ya creado
-
-## 🚀 Funcionalidades por desarrollar
-- Escanear etiqueta para identificar la prenda original
-- Escanear prenda física y mostrar imagen oficial de la tienda (Zara, H&M...)
-- Probador virtual: superponer la prenda sobre tu foto de perfil
-- Compartir prendas entre amigas
-- Recomendaciones de nuevas prendas enlazadas a tiendas
-- Monetización con códigos de afiliado en recomendaciones
-- Integración con app de clima para sugerir outfits según el tiempo del destino
-- Conexión con cuentas de tiendas (Inditex, etc.) para importar compras
-- Notificación "has comprado esto, ¿añadirlo a tu armario?"
-
-## 💡 Ideas futuras
-- Lookbook compartido / comunidad
-- Estadísticas de uso del armario (qué prendas usas más)
-- Alertas de rebajas en prendas similares a las tuyas
-- Versión nativa iOS/Android (Capacitor)
-- Acuerdos directos con marcas para integración oficial
-- Monetización: suscripción premium para funciones avanzadas
-
-## 📱 Técnico pendiente
-- Mover carpeta del proyecto fuera de OneDrive (Windows trabajo)
-- Mac 2012: valorar abandonar definitivamente
+### 🔧 Pendiente
 - Añadir RLS a todas las tablas antes de lanzamiento público
+- Activar cuenta de pago en Google AI para producción (límite actual: 1€/mes)
+
+---
+
+## 🤖 INTELIGENCIA ARTIFICIAL
+
+### ✅ Hecho
+- IA con Gemini 2.5 Flash reconoce tipo y color automáticamente al subir foto
+
+### 🔧 Pendiente
+- Escanear etiqueta de prenda para identificar artículo original
+- Escanear prenda física y mostrar imagen oficial de tienda (Zara, H&M...)
+- Probador virtual: superponer prenda sobre foto de perfil
+- Integración con app de clima para sugerir outfits según destino y fechas
+- Recomendaciones de prendas nuevas basadas en el armario
+
+---
+
+## 👗 ARMARIO
+
+### ✅ Hecho
+- Añadir prendas con foto
+- Clasificación automática con IA (tipo y color)
+- Tipo y color visibles debajo de cada foto
+- Editar prendas (tipo y color)
+- Eliminar prendas
+- Filtros por tipo y color
+- Categorías ampliadas con grupos (Armario / Zapatos & Accesorios)
+- Prendas sin color muestran "—"
+
+### 🔧 Pendiente
+- Editar prendas del armario desde el modal de edición de outfit
+- Ampliar categorías: más tipos de accesorios
+- Las prendas aparezcan ordenadas por categorías, pero haya un desplegable que permita, o bien ordenarlas por categorías, o bien ordenarlas por estilo (Casual, Arreglado, Deportivo, Noche, Día, etc. Lo que hemos llamado "Momento" en Outfits")
+- el color y el tipo de prenda no es necesario que aparezca debajo de la prenda, porque estarán clasificados por eso.
+- en los filtros, poder filtrar también por color.
+
+---
+
+## 👔 OUTFITS
+
+### ✅ Hecho
+- Crear outfits seleccionando prendas del armario
+- Asignar evento y momento (día, noche, cena, playa...)
+- Ver miniaturas de prendas en cada outfit
+- Editar nombre, evento y momento de un outfit
+- Eliminar outfits
+
+### 🔧 Pendiente
+- Editar prendas dentro de un outfit ya creado (añadir, quitar, cambiar)
+- al crear nuevo Outfit, en "Evento o viaje (opcional)", poder elegir un Viaje de la pestaña Viajes.
+- Ordenar los outftis por su categoría (Día, Noche, etc)
+
+
+---
+
+## ✈️ VIAJES
+
+### ✅ Hecho
+- Crear viajes con nombre, destino y fechas validadas
+- Asignar outfits a un viaje con miniaturas
+- Vista de maleta: miniaturas de todas las prendas únicas del viaje
+- Editar nombre, destino y fechas de un viaje
+- Eliminar viajes
+- Outfits se refrescan automáticamente al entrar en viajes
+
+### 🔧 Pendiente
+- Editar outfits asignados a un viaje (añadir, quitar, cambiar)
+- Organizar outfits dentro del viaje por tipo de plan
+
+---
+
+## 👤 PERFIL & CUENTA
+
+### ✅ Hecho
+- Nombre de usuario guardado
+- Fotos de perfil: cara y cuerpo entero
+- Estilos favoritos guardados por usuario
+- Cambiar contraseña
+- Cerrar sesión
+
+### 🔧 Pendiente
+- Foto de perfil visible en el header/avatar
+- Borrar la pestaña "Perfil" y que en el header aparezca el nombre y una foto de perfil o avatar
+
+---
+
+## 💰 MONETIZACIÓN & SOCIAL
+
+### 🚀 Por desarrollar
+- Compartir prendas entre amigas
+- Recomendaciones de prendas enlazadas a tiendas con código de afiliado
+- Suscripción premium para funciones avanzadas
+- Conexión con cuentas de tiendas (Inditex...) para importar compras automáticamente
+- Notificación "has comprado esto, ¿añadirlo a tu armario?"
+- Acuerdos directos con marcas para integración oficial
+
+---
+
+## 💡 IDEAS FUTURAS
+
+- Lookbook compartido / comunidad
+- Estadísticas del armario (prendas más usadas, colores dominantes...)
+- Alertas de rebajas en prendas similares a las tuyas
+- Versión nativa iOS/Android con Capacitor
+
+---
+
+## 🛠️ TÉCNICO
+
+### ✅ Hecho
+- App publicada en Vercel con despliegue automático desde GitHub
 - Límite de gasto Gemini configurado a 1€/mes
+
+### 🔧 Pendiente
+- Mover carpeta del proyecto fuera de OneDrive (Windows trabajo)
+- Añadir RLS a todas las tablas restantes antes de lanzamiento público
