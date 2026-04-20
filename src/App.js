@@ -253,14 +253,7 @@ const guardarEdicion = async () => {
             <h2>Mi armario</h2>
             <p style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>Añade tus prendas para crear outfits y planificar tus viajes.</p>
            <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
-            <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} style={{ flex: 1, padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }}>
-              <option value="">Todos los tipos</option>
-              {CATEGORIAS.map(g => (
-                <optgroup key={g.grupo} label={g.grupo}>
-                  {g.opciones.map(o => <option key={o} value={o}>{o}</option>)}
-                </optgroup>
-              ))}
-            </select>
+            <SelectorCategoria value={filtroTipo} onChange={setFiltroTipo} placeholder="Todos los tipos" />
             <input type="text" placeholder="Color..." value={filtroColor} onChange={(e) => setFiltroColor(e.target.value)} style={{ flex: 1, padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }} />
           </div>
             {!prendaPrevia ? (
