@@ -9,21 +9,25 @@
 - Tipo y color visible debajo de cada foto
 - Estilos de perfil guardados por usuario
 - Página de Cuenta (nombre, contraseña, cerrar sesión)
-- Outfits: crear, asignar a evento, guardar y ver
-- Viajes: crear con destino, fechas y outfits asignados
+- Outfits: crear, asignar a evento y momento, guardar y ver
+- Viajes: crear con destino, fechas validadas y outfits asignados
 - Eliminar prendas, outfits y viajes
 - Filtros en el armario por tipo y color
 - IA con Gemini 2.5 Flash para reconocer tipo y color automáticamente
 - Editar prendas (tipo y color)
 - Miniaturas de prendas en outfits dentro de viajes
+- Miniaturas al seleccionar outfits en viajes
+- Outfits se refrescan automáticamente al entrar en viajes
 - Fotos de perfil: cara y cuerpo entero
 - Categorías ampliadas con grupos (Armario / Zapatos & Accesorios)
+- Textos explicativos en todas las secciones
+- Prendas sin color muestran guión en lugar de "sin color"
 
 ## 🔧 Retoques pendientes
-- Revisar textos explicativos en secciones que los han perdido
-- Prendas antiguas muestran "sin color" — mejorar texto
-- Outfits en viajes: organizar por tipo de plan (día, noche, cena, playa...)
 - Vista de maleta: miniatura visual de todas las prendas del viaje
+- Outfits en viajes: organizar por tipo de plan dentro del viaje
+- Editar nombre y datos de un viaje ya creado
+- Editar nombre y datos de un outfit ya creado
 
 ## 🚀 Funcionalidades por desarrollar
 - Escanear etiqueta para identificar la prenda original
