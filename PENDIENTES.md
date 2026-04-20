@@ -46,13 +46,14 @@
 - Prendas sin color muestran "—"
 - el color y el tipo de prenda no es necesario que aparezca debajo de la prenda, porque estarán clasificados por eso.
 - Ampliar categorías: más tipos de accesorios
+- Las prendas aparezcan ordenadas por categorías, pero haya un desplegable que permita, o bien ordenarlas por categorías, o bien ordenarlas por estilo (Casual, Arreglado, Deportivo, Noche, Día, etc. Lo que hemos llamado "Momento" en Outfits")
 
 ### 🔧 Pendiente
 - Editar prendas del armario desde el modal de edición de outfit
-- Las prendas aparezcan ordenadas por categorías, pero haya un desplegable que permita, o bien ordenarlas por categorías, o bien ordenarlas por estilo (Casual, Arreglado, Deportivo, Noche, Día, etc. Lo que hemos llamado "Momento" en Outfits")
-- en los filtros, poder filtrar también por color.
-- las prendas tienen que poder tener un "momento"
-- ordenar las prendas en el orden que habíamos previsto
+- en los filtros, poder filtrar también por color (es decir, dentro de "Por color", un submenú que permita escribir o seleccionar un único o varios colores).
+- las prendas tienen que poder tener un "momento" al subirlas
+- si ordenamos por "momento", tener un submenú que permita elegir un momento o varios
+- ordenar las prendas en el orden que habíamos previsto, mostrando tipo "PRENDAS" -> subgrupos con posibilidad de desplegable
 - tener un submenú dentro de "ordenar por categoría" que permita ver solo una categoría
 
 ---
