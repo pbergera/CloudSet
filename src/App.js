@@ -234,6 +234,7 @@ const guardarEdicion = async () => {
         <div className="seccion">
           <div className="card">
             <h2>Mi armario</h2>
+            <p style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>Añade tus prendas para crear outfits y planificar tus viajes.</p>
            <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
             <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} style={{ flex: 1, padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }}>
               <option value="">Todos los tipos</option>
