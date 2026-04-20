@@ -25,6 +25,11 @@ function Viajes({ usuario, outfits }) {
     if (!error && data) setViajes(data);
   };
 
+  const eliminarViaje = async (id) => {
+   await supabase.from("viajes").delete().eq("id", id);
+   await cargarViajes();
+  };
+
   const toggleOutfit = (id) => {
     setOutfitsSeleccionados(prev =>
       prev.includes(id) ? prev.filter(o => o !== id) : [...prev, id]
@@ -81,14 +86,17 @@ function Viajes({ usuario, outfits }) {
           )}
 
           {viajes.map(v => (
-            <div key={v.id} className="card" onClick={() => setViajeAbierto(viajeAbierto === v.id ? null : v.id)} style={{ cursor: "pointer" }}>
-              <div style={{ fontWeight: "500", fontSize: "14px", marginBottom: "4px" }}>{v.nombre}</div>
-              <div style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>
-                {v.destino}
-                {v.fecha_inicio && ` · ${new Date(v.fecha_inicio).toLocaleDateString("es-ES")}`}
-                {v.fecha_fin && ` → ${new Date(v.fecha_fin).toLocaleDateString("es-ES")}`}
-                {diasViaje(v.fecha_inicio, v.fecha_fin) && ` · ${diasViaje(v.fecha_inicio, v.fecha_fin)} días`}
-              </div>
+           <div key={v.id} className="card">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+             <div style={{ fontWeight: "500", fontSize: "14px", cursor: "pointer" }} onClick={() => setViajeAbierto(viajeAbierto === v.id ? null : v.id)}>{v.nombre}</div>
+             <div onClick={() => eliminarViaje(v.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
+            </div>
+            <div style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>
+             {v.destino}
+             {v.fecha_inicio && ` · ${new Date(v.fecha_inicio).toLocaleDateString("es-ES")}`}
+             {v.fecha_fin && ` → ${new Date(v.fecha_fin).toLocaleDateString("es-ES")}`}
+             {diasViaje(v.fecha_inicio, v.fecha_fin) && ` · ${diasViaje(v.fecha_inicio, v.fecha_fin)} días`}
+            </div>
 
               {viajeAbierto === v.id && (
                 <div style={{ marginTop: "10px" }}>
