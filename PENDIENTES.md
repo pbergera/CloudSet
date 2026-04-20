@@ -11,29 +11,28 @@
 - Página de Cuenta (nombre, contraseña, cerrar sesión)
 - Outfits: crear, asignar a evento, guardar y ver
 - Viajes: crear con destino, fechas y outfits asignados
-- Eliminar prendas
+- Eliminar prendas, outfits y viajes
 - Filtros en el armario por tipo y color
-- IA con Gemini para reconocer tipo y color automáticamente al subir foto
+- IA con Gemini 2.5 Flash para reconocer tipo y color automáticamente
+- Editar prendas (tipo y color)
+- Miniaturas de prendas en outfits dentro de viajes
+- Fotos de perfil: cara y cuerpo entero
+- Categorías ampliadas con grupos (Armario / Zapatos & Accesorios)
 
 ## 🔧 Retoques pendientes
 - Revisar textos explicativos en secciones que los han perdido
-- Prendas antiguas muestran "sin color"
-- Eliminar outfits y viajes
-- Editar prendas (cambiar tipo, color, notas)
-- Ampliar categorías: bolsos, cinturones, sombreros, joyería, bufandas, gafas
-- Outfits en viajes: mostrar miniatura en lugar de solo el nombre
+- Prendas antiguas muestran "sin color" — mejorar texto
 - Outfits en viajes: organizar por tipo de plan (día, noche, cena, playa...)
+- Vista de maleta: miniatura visual de todas las prendas del viaje
 
 ## 🚀 Funcionalidades por desarrollar
 - Escanear etiqueta para identificar la prenda original
 - Escanear prenda física y mostrar imagen oficial de la tienda (Zara, H&M...)
 - Probador virtual: superponer la prenda sobre tu foto de perfil
-- Fotos de perfil: cara y cuerpo entero
 - Compartir prendas entre amigas
 - Recomendaciones de nuevas prendas enlazadas a tiendas
 - Monetización con códigos de afiliado en recomendaciones
 - Integración con app de clima para sugerir outfits según el tiempo del destino
-- Vista de maleta: miniatura visual de todas las prendas del viaje
 - Conexión con cuentas de tiendas (Inditex, etc.) para importar compras
 - Notificación "has comprado esto, ¿añadirlo a tu armario?"
 
@@ -47,6 +46,6 @@
 
 ## 📱 Técnico pendiente
 - Mover carpeta del proyecto fuera de OneDrive (Windows trabajo)
-- Mac 2012: npm install puede que no termine nunca — valorar abandonar
+- Mac 2012: valorar abandonar definitivamente
 - Añadir RLS a todas las tablas antes de lanzamiento público
-- Activar cuenta de pago en Google AI antes del lanzamiento público
+- Límite de gasto Gemini configurado a 1€/mes
