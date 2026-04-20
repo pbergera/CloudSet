@@ -74,6 +74,7 @@ function Viajes({ usuario, outfits, prendas }) {
         <>
           <div className="card">
             <h2>Mis viajes</h2>
+            <p style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>Planifica tu maleta para cada viaje o evento asignando outfits.</p>
             <button onClick={() => setCreando(true)} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>
               + Nuevo viaje o evento
             </button>

@@ -60,6 +60,7 @@ function Outfits({ usuario, prendas }) {
         <>
           <div className="card">
             <h2>Mis outfits</h2>
+            <p style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>Combina prendas de tu armario y guarda tus looks favoritos.</p>
             <button onClick={() => setCreando(true)} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>
               + Crear outfit
             </button>
