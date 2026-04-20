@@ -25,6 +25,7 @@ function App() {
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [ordenarPor, setOrdenarPor] = useState("categoria");
+  const [momentoPrenda, setMomentoPrenda] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -95,6 +96,7 @@ const seleccionarFoto = (e) => {
   setPrendaPrevia({ file, url });
   setTipoPrenda("");
   setColorPrenda("");
+  setMomentoPrenda("");
   analizarPrendaConIA(file);
 };
 
@@ -161,6 +163,7 @@ const guardarPrenda = async () => {
       foto_url: urlData.publicUrl,
       tipo: tipoPrenda || "sin clasificar",
       color: colorPrenda || "sin color",
+      momento: momentoPrenda || null,
       usuario_id: usuario.id
     });
 
@@ -268,6 +271,17 @@ const guardarEdicion = async () => {
                 <img src={prendaPrevia.url} alt="prenda" style={{ width: "100%", borderRadius: "8px", marginBottom: "12px" }} />
                 <SelectorCategoria value={tipoPrenda} onChange={setTipoPrenda} placeholder="Tipo de prenda..." />
                 <input type="text" placeholder="Color (ej: azul, negro...)" value={colorPrenda} onChange={(e) => setColorPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+                <select value={momentoPrenda} onChange={(e) => setMomentoPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
+                  <option value="">Momento (opcional)</option>
+                  <option value="Casual">Casual</option>
+                  <option value="Arreglado">Arreglado</option>
+                  <option value="Deportivo">Deportivo</option>
+                  <option value="Noche">Noche</option>
+                  <option value="Día">Día</option>
+                  <option value="Playa">Playa</option>
+                  <option value="Trabajo">Trabajo</option>
+                  <option value="Formal">Formal</option>
+                </select>
                 <button onClick={guardarPrenda} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>
                   {cargando ? "Guardando..." : "Guardar prenda"}
                 </button>
