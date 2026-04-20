@@ -6,6 +6,7 @@ import "./App.css";
 import Outfits from "./Outfits";
 import Viajes from "./Viajes";
 import SelectorCategoria from "./SelectorCategoria";
+import { TODAS_CATEGORIAS } from "./categorias";
 
 function App() {
   const [seccion, setSeccion] = useState("armario");
@@ -285,7 +286,7 @@ const guardarEdicion = async () => {
                 if (!grupos[clave]) grupos[clave] = [];
                 grupos[clave].push(p);
               });
-              const { TODAS_CATEGORIAS } = require("./categorias");
+              
               const ordenadas = [
                 ...TODAS_CATEGORIAS.filter(c => grupos[c]),
                 ...Object.keys(grupos).filter(g => !TODAS_CATEGORIAS.includes(g))
