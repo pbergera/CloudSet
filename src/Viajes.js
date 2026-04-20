@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
-function Viajes({ usuario, outfits, prendas }) {
+function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   const [viajes, setViajes] = useState([]);
   const [creando, setCreando] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -13,6 +13,7 @@ function Viajes({ usuario, outfits, prendas }) {
 
   useEffect(() => {
     cargarViajes();
+    if (onRefrescarOutfits) onRefrescarOutfits();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -148,7 +149,8 @@ function Viajes({ usuario, outfits, prendas }) {
               <input
                 type="date"
                 value={fechaInicio}
-                onChange={(e) => setFechaInicio(e.target.value)}
+                min={new Date().toISOString().split("T")[0]}
+                onChange={(e) => { setFechaInicio(e.target.value); if (fechaFin && e.target.value > fechaFin) setFechaFin(""); }}
                 style={{ width: "100%", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
               />
             </div>
@@ -157,6 +159,7 @@ function Viajes({ usuario, outfits, prendas }) {
               <input
                 type="date"
                 value={fechaFin}
+                min={fechaInicio || new Date().toISOString().split("T")[0]}
                 onChange={(e) => setFechaFin(e.target.value)}
                 style={{ width: "100%", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
               />
@@ -173,9 +176,16 @@ function Viajes({ usuario, outfits, prendas }) {
                   style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px", marginBottom: "6px", border: outfitsSeleccionados.includes(o.id) ? "1.5px solid #2c2c2a" : "1px solid #e0ddd6", borderRadius: "8px", cursor: "pointer" }}
                 >
                   <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: outfitsSeleccionados.includes(o.id) ? "#2c2c2a" : "white", border: "1px solid #2c2c2a", flexShrink: 0 }} />
+                  <div style={{ display: "flex", gap: "4px", marginRight: "6px" }}>
+                    {(o.prendas || []).slice(0, 3).map(id => {
+                      const prenda = prendas.find(p => p.id === id);
+                      return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "32px", height: "32px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
+                    })}
+                  </div>
                   <div>
                     <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
                     {o.evento && <div style={{ fontSize: "11px", color: "#aaa" }}>{o.evento}</div>}
+                    {o.momento && <div style={{ fontSize: "11px", color: "#aaa" }}>{o.momento}</div>}
                   </div>
                 </div>
               ))}
