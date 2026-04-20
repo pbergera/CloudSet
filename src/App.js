@@ -19,6 +19,9 @@ function App() {
   const [outfitsList, setOutfitsList] = useState([]);
   const [filtroTipo, setFiltroTipo] = useState("");
   const [filtroColor, setFiltroColor] = useState("");
+  const [prendaEditando, setPrendaEditando] = useState(null);
+  const [tipoEditado, setTipoEditado] = useState("");
+  const [colorEditado, setColorEditado] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -170,6 +173,15 @@ const eliminarPrenda = async (id, foto_url) => {
   await cargarPrendas();
 };
 
+const guardarEdicion = async () => {
+  await supabase
+    .from("prendas")
+    .update({ tipo: tipoEditado, color: colorEditado })
+    .eq("id", prendaEditando.id);
+  await cargarPrendas();
+  setPrendaEditando(null);
+};
+
   const cerrarSesion = async () => {
     await supabase.auth.signOut();
     setPrendas([]);
@@ -283,15 +295,39 @@ const eliminarPrenda = async (id, foto_url) => {
                     <div style={{ fontWeight: "500", color: "#2c2c2a" }}>{p.tipo}</div>
                     <div>{p.color}</div>
                   </div>
-                  <div
-                    onClick={() => eliminarPrenda(p.id, p.foto_url)}
-                    style={{ padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer", borderTop: "1px solid #f0ede6" }}
-                  >
-                    Eliminar
+                  <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
+                    <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                    <div style={{ width: "1px", background: "#f0ede6" }} />
+                    <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
                   </div>
                 </div>
               ))}
             </div>
+
+            {prendaEditando && (
+              <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+                <div style={{ background: "white", borderRadius: "12px", padding: "1.25rem", width: "300px" }}>
+                  <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar prenda</h2>
+                  <select value={tipoEditado} onChange={(e) => setTipoEditado(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
+                    <option value="">Tipo de prenda...</option>
+                    <option value="camiseta">Camiseta</option>
+                    <option value="camisa">Camisa</option>
+                    <option value="pantalon">Pantalón</option>
+                    <option value="vestido">Vestido</option>
+                    <option value="falda">Falda</option>
+                    <option value="chaqueta">Chaqueta</option>
+                    <option value="abrigo">Abrigo</option>
+                    <option value="zapatos">Zapatos</option>
+                    <option value="zapatillas">Zapatillas</option>
+                    <option value="accesorio">Accesorio</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                  <input type="text" value={colorEditado} onChange={(e) => setColorEditado(e.target.value)} placeholder="Color" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+                  <button onClick={guardarEdicion} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
+                  <button onClick={() => setPrendaEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
