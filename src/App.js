@@ -5,6 +5,7 @@ import Perfil from "./Perfil";
 import "./App.css";
 import Outfits from "./Outfits";
 import Viajes from "./Viajes";
+import { CATEGORIAS, TODAS_CATEGORIAS } from "./categorias";
 
 function App() {
   const [seccion, setSeccion] = useState("perfil");
@@ -236,17 +237,11 @@ const guardarEdicion = async () => {
            <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
             <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)} style={{ flex: 1, padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }}>
               <option value="">Todos los tipos</option>
-              <option value="camiseta">Camiseta</option>
-              <option value="camisa">Camisa</option>
-              <option value="pantalon">Pantalón</option>
-              <option value="vestido">Vestido</option>
-              <option value="falda">Falda</option>
-              <option value="chaqueta">Chaqueta</option>
-              <option value="abrigo">Abrigo</option>
-              <option value="zapatos">Zapatos</option>
-              <option value="zapatillas">Zapatillas</option>
-              <option value="accesorio">Accesorio</option>
-              <option value="otro">Otro</option>
+              {CATEGORIAS.map(g => (
+                <optgroup key={g.grupo} label={g.grupo}>
+                  {g.opciones.map(o => <option key={o} value={o}>{o}</option>)}
+                </optgroup>
+              ))}
             </select>
             <input type="text" placeholder="Color..." value={filtroColor} onChange={(e) => setFiltroColor(e.target.value)} style={{ flex: 1, padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }} />
           </div>
@@ -260,17 +255,11 @@ const guardarEdicion = async () => {
                 <img src={prendaPrevia.url} alt="prenda" style={{ width: "100%", borderRadius: "8px", marginBottom: "12px" }} />
                 <select value={tipoPrenda} onChange={(e) => setTipoPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
                   <option value="">Tipo de prenda...</option>
-                  <option value="camiseta">Camiseta</option>
-                  <option value="camisa">Camisa</option>
-                  <option value="pantalon">Pantalón</option>
-                  <option value="vestido">Vestido</option>
-                  <option value="falda">Falda</option>
-                  <option value="chaqueta">Chaqueta</option>
-                  <option value="abrigo">Abrigo</option>
-                  <option value="zapatos">Zapatos</option>
-                  <option value="zapatillas">Zapatillas</option>
-                  <option value="accesorio">Accesorio</option>
-                  <option value="otro">Otro</option>
+                  {CATEGORIAS.map(g => (
+                    <optgroup key={g.grupo} label={g.grupo}>
+                      {g.opciones.map(o => <option key={o} value={o}>{o}</option>)}
+                    </optgroup>
+                  ))}
                 </select>
                 <input type="text" placeholder="Color (ej: azul, negro...)" value={colorPrenda} onChange={(e) => setColorPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
                 <button onClick={guardarPrenda} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>
@@ -310,17 +299,11 @@ const guardarEdicion = async () => {
                   <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar prenda</h2>
                   <select value={tipoEditado} onChange={(e) => setTipoEditado(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
                     <option value="">Tipo de prenda...</option>
-                    <option value="camiseta">Camiseta</option>
-                    <option value="camisa">Camisa</option>
-                    <option value="pantalon">Pantalón</option>
-                    <option value="vestido">Vestido</option>
-                    <option value="falda">Falda</option>
-                    <option value="chaqueta">Chaqueta</option>
-                    <option value="abrigo">Abrigo</option>
-                    <option value="zapatos">Zapatos</option>
-                    <option value="zapatillas">Zapatillas</option>
-                    <option value="accesorio">Accesorio</option>
-                    <option value="otro">Otro</option>
+                    {CATEGORIAS.map(g => (
+                      <optgroup key={g.grupo} label={g.grupo}>
+                        {g.opciones.map(o => <option key={o} value={o}>{o}</option>)}
+                      </optgroup>
+                    ))}
                   </select>
                   <input type="text" value={colorEditado} onChange={(e) => setColorEditado(e.target.value)} placeholder="Color" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
                   <button onClick={guardarEdicion} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>

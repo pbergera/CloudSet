@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
+
 function Outfits({ usuario, prendas }) {
   const [outfits, setOutfits] = useState([]);
   const [creando, setCreando] = useState(false);
