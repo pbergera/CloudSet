@@ -5,7 +5,6 @@ import Perfil from "./Perfil";
 import "./App.css";
 import Outfits from "./Outfits";
 import Viajes from "./Viajes";
-import { CATEGORIAS } from "./categorias";
 import SelectorCategoria from "./SelectorCategoria";
 
 function App() {
