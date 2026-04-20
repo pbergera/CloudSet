@@ -98,7 +98,9 @@
 - Foto de perfil visible en el header/avatar
 
 ### 🔧 Pendiente
-- Borrar la pestaña "Perfil" y que en el header aparezca el nombre y una foto de perfil o avatar
+- Borrar la pestaña "Perfil" y "Cuenta".
+- Añadir nombre en el header
+- Al clicar en el avatar del header, que te lleve a la pestaña "Cuenta" que tiene los datos de nombre, cambiar contraseña, cerrar sesión, y estilos con los que te identificas
 
 ---
 
