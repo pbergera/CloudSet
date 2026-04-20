@@ -293,10 +293,9 @@ const guardarEdicion = async () => {
               ];
               return ordenadas.map(grupo => (
                 <div key={grupo} style={{ marginBottom: "16px" }}>
-                <div key={grupo} style={{ marginBottom: "16px" }}>
                   <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>{grupo}</div>
                   <div className="grid">
-                    {items.map(p => (
+                    {grupos[grupo].map(p => (
                       <div key={p.id} className="grid-item">
                         <img src={p.foto_url} alt={p.tipo} />
                         <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
