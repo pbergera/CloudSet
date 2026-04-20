@@ -23,6 +23,7 @@ function App() {
   const [prendaEditando, setPrendaEditando] = useState(null);
   const [tipoEditado, setTipoEditado] = useState("");
   const [colorEditado, setColorEditado] = useState("");
+  const [fotoPerfil, setFotoPerfil] = useState(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -54,13 +55,14 @@ function App() {
   };
 
   const cargarPerfil = async () => {
-  const { data } = await supabase
+   const { data } = await supabase
     .from("usuarios")
-    .select("estilos")
+    .select("estilos, foto_cara")
     .eq("id", usuario.id)
     .single();
-  if (data?.estilos) setEstilos(data.estilos);
-};
+   if (data?.estilos) setEstilos(data.estilos);
+   if (data?.foto_cara) setFotoPerfil(data.foto_cara);
+  };
 
 const cargarOutfits = async () => {
   const { data, error } = await supabase
@@ -193,8 +195,11 @@ const guardarEdicion = async () => {
 
   return (
     <div className="app">
-      <div className="header">
+      <div className="header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span className="logo">CloudSet</span>
+        <div onClick={() => setSeccion("cuenta")} style={{ width: "36px", height: "36px", borderRadius: "50%", overflow: "hidden", border: "1px solid #e0ddd6", cursor: "pointer", background: "#f5f5f3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          {fotoPerfil ? <img src={fotoPerfil} alt="perfil" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: "12px", color: "#888" }}>Yo</span>}
+        </div>
       </div>
 
       <div className="nav">

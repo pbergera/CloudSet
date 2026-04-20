@@ -95,9 +95,9 @@
 - Estilos favoritos guardados por usuario
 - Cambiar contraseña
 - Cerrar sesión
+- Foto de perfil visible en el header/avatar
 
 ### 🔧 Pendiente
-- Foto de perfil visible en el header/avatar
 - Borrar la pestaña "Perfil" y que en el header aparezca el nombre y una foto de perfil o avatar
 
 ---
