@@ -10,6 +10,11 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   const [fechaFin, setFechaFin] = useState("");
   const [outfitsSeleccionados, setOutfitsSeleccionados] = useState([]);
   const [viajeAbierto, setViajeAbierto] = useState(null);
+  const [viajeEditando, setViajeEditando] = useState(null);
+  const [nombreEditado, setNombreEditado] = useState("");
+  const [destinoEditado, setDestinoEditado] = useState("");
+  const [fechaInicioEditada, setFechaInicioEditada] = useState("");
+  const [fechaFinEditada, setFechaFinEditada] = useState("");
 
   useEffect(() => {
     cargarViajes();
@@ -29,6 +34,17 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   const eliminarViaje = async (id) => {
    await supabase.from("viajes").delete().eq("id", id);
    await cargarViajes();
+  };
+
+  const guardarEdicionViaje = async () => {
+   await supabase.from("viajes").update({
+    nombre: nombreEditado,
+    destino: destinoEditado,
+    fecha_inicio: fechaInicioEditada || null,
+    fecha_fin: fechaFinEditada || null
+   }).eq("id", viajeEditando.id);
+   await cargarViajes();
+   setViajeEditando(null);
   };
 
   const toggleOutfit = (id) => {
@@ -91,7 +107,10 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
            <div key={v.id} className="card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
              <div style={{ fontWeight: "500", fontSize: "14px", cursor: "pointer" }} onClick={() => setViajeAbierto(viajeAbierto === v.id ? null : v.id)}>{v.nombre}</div>
-             <div onClick={() => eliminarViaje(v.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
+             <div style={{ display: "flex", gap: "10px" }}>
+                  <div onClick={() => { setViajeEditando(v); setNombreEditado(v.nombre); setDestinoEditado(v.destino); setFechaInicioEditada(v.fecha_inicio || ""); setFechaFinEditada(v.fecha_fin || ""); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={() => eliminarViaje(v.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
+                </div>
             </div>
             <div style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>
              {v.destino}
@@ -106,25 +125,64 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
                   {outfitsDeViaje(v.outfits).length === 0 ? (
                     <p style={{ fontSize: "12px", color: "#aaa" }}>Sin outfits asignados</p>
                   ) : (
-                    outfitsDeViaje(v.outfits).map(o => (
-                    <div key={o.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
-                      <div style={{ display: "flex", gap: "3px" }}>
-                        {(o.prendas || []).slice(0, 3).map(id => {
-                          const prenda = prendas.find(p => p.id === id);
-                          return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
-                        })}
+                    <>
+                      {outfitsDeViaje(v.outfits).map(o => (
+                        <div key={o.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
+                          <div style={{ display: "flex", gap: "3px" }}>
+                            {(o.prendas || []).slice(0, 3).map(id => {
+                              const prenda = prendas.find(p => p.id === id);
+                              return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
+                            })}
+                          </div>
+                          <div>
+                            <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
+                            {o.evento && <div style={{ color: "#aaa", fontSize: "11px" }}>{o.evento}</div>}
+                            {o.momento && <div style={{ color: "#aaa", fontSize: "11px" }}>{o.momento}</div>}
+                          </div>
+                        </div>
+                      ))}
+                      <div style={{ marginTop: "12px" }}>
+                        <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Mi maleta:</p>
+                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                          {[...new Set(outfitsDeViaje(v.outfits).flatMap(o => o.prendas || []))].map(id => {
+                            const prenda = prendas.find(p => p.id === id);
+                            return prenda ? (
+                              <div key={id} style={{ textAlign: "center" }}>
+                                <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
+                                <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                              </div>
+                            ) : null;
+                          })}
+                        </div>
                       </div>
-                      <div>
-                        <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
-                        {o.evento && <div style={{ color: "#aaa", fontSize: "11px" }}>{o.evento}</div>}
-                      </div>
-                    </div>
-                  ))
+                    </>
                   )}
                 </div>
               )}
-            </div>
+          </div>
           ))}
+
+      {viajeEditando && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+          <div style={{ background: "white", borderRadius: "12px", padding: "1.25rem", width: "300px" }}>
+            <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar viaje</h2>
+            <input type="text" value={nombreEditado} onChange={(e) => setNombreEditado(e.target.value)} placeholder="Nombre" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+            <input type="text" value={destinoEditado} onChange={(e) => setDestinoEditado(e.target.value)} placeholder="Destino" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+            <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "4px" }}>Desde</label>
+                <input type="date" value={fechaInicioEditada} onChange={(e) => setFechaInicioEditada(e.target.value)} style={{ width: "100%", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "4px" }}>Hasta</label>
+                <input type="date" value={fechaFinEditada} min={fechaInicioEditada} onChange={(e) => setFechaFinEditada(e.target.value)} style={{ width: "100%", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+              </div>
+            </div>
+            <button onClick={guardarEdicionViaje} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
+            <button onClick={() => setViajeEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
+          </div>
+        </div>
+      )}
         </>
       ) : (
         <div className="card">
