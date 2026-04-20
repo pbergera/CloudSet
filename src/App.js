@@ -5,7 +5,7 @@ import Perfil from "./Perfil";
 import "./App.css";
 import Outfits from "./Outfits";
 import Viajes from "./Viajes";
-import { CATEGORIAS, TODAS_CATEGORIAS } from "./categorias";
+import { CATEGORIAS } from "./categorias";
 
 function App() {
   const [seccion, setSeccion] = useState("perfil");
