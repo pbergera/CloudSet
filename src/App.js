@@ -8,7 +8,7 @@ import Viajes from "./Viajes";
 import { CATEGORIAS } from "./categorias";
 
 function App() {
-  const [seccion, setSeccion] = useState("perfil");
+  const [seccion, setSeccion] = useState("armario");
   const [prendas, setPrendas] = useState([]);
   const [estilos, setEstilos] = useState([]);
   const [cargando, setCargando] = useState(false);
@@ -204,7 +204,7 @@ const guardarEdicion = async () => {
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div>
             <div style={{ fontSize: "22px", fontWeight: "500", color: "#2c2c2a" }}>
-              {nombreUsuario ? `Hola, ${nombreUsuario}` : "Hola"}
+              {nombreUsuario ? `¡Hola, ${nombreUsuario}!` : "¡Hola!"}
             </div>
           </div>
           <div onClick={() => setSeccion("cuenta")} style={{ width: "44px", height: "44px", borderRadius: "50%", overflow: "hidden", border: "1px solid #e0ddd6", cursor: "pointer", background: "#f5f5f3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
