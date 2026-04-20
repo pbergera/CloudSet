@@ -45,10 +45,10 @@
 - Categorías ampliadas con grupos (Armario / Zapatos & Accesorios)
 - Prendas sin color muestran "—"
 - el color y el tipo de prenda no es necesario que aparezca debajo de la prenda, porque estarán clasificados por eso.
+- Ampliar categorías: más tipos de accesorios
 
 ### 🔧 Pendiente
 - Editar prendas del armario desde el modal de edición de outfit
-- Ampliar categorías: más tipos de accesorios
 - Las prendas aparezcan ordenadas por categorías, pero haya un desplegable que permita, o bien ordenarlas por categorías, o bien ordenarlas por estilo (Casual, Arreglado, Deportivo, Noche, Día, etc. Lo que hemos llamado "Momento" en Outfits")
 - en los filtros, poder filtrar también por color.
 
