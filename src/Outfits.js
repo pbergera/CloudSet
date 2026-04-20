@@ -22,6 +22,11 @@ function Outfits({ usuario, prendas }) {
     if (!error && data) setOutfits(data);
   };
 
+  const eliminarOutfit = async (id) => {
+   await supabase.from("outfits").delete().eq("id", id);
+   await cargarOutfits();
+  };
+
   const togglePrenda = (id) => {
     setSeleccionadas(prev =>
       prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
@@ -67,7 +72,10 @@ function Outfits({ usuario, prendas }) {
 
           {outfits.map(o => (
             <div key={o.id} className="card">
-              <div style={{ fontWeight: "500", fontSize: "14px", marginBottom: "4px" }}>{o.nombre}</div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
+                <div onClick={() => eliminarOutfit(o.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
+              </div>
               {o.evento && <div style={{ fontSize: "12px", color: "#888", marginBottom: "10px" }}>{o.evento}</div>}
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                 {prendasDeOutfit(o.prendas || []).map(p => (
