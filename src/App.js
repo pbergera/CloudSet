@@ -301,7 +301,7 @@ const eliminarPrenda = async (id, foto_url) => {
       )}
 
     {seccion === "viajes" && (
-        <Viajes usuario={usuario} outfits={outfitsList} />
+        <Viajes usuario={usuario} outfits={outfitsList} prendas={prendas} />
       )}
 
     {seccion === "cuenta" && (

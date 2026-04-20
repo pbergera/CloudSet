@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
-function Viajes({ usuario, outfits }) {
+function Viajes({ usuario, outfits, prendas }) {
   const [viajes, setViajes] = useState([]);
   const [creando, setCreando] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -105,11 +105,19 @@ function Viajes({ usuario, outfits }) {
                     <p style={{ fontSize: "12px", color: "#aaa" }}>Sin outfits asignados</p>
                   ) : (
                     outfitsDeViaje(v.outfits).map(o => (
-                      <div key={o.id} style={{ fontSize: "13px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
-                        {o.nombre}
-                        {o.evento && <span style={{ color: "#aaa", fontSize: "11px" }}> · {o.evento}</span>}
+                    <div key={o.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
+                      <div style={{ display: "flex", gap: "3px" }}>
+                        {(o.prendas || []).slice(0, 3).map(id => {
+                          const prenda = prendas.find(p => p.id === id);
+                          return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
+                        })}
                       </div>
-                    ))
+                      <div>
+                        <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
+                        {o.evento && <div style={{ color: "#aaa", fontSize: "11px" }}>{o.evento}</div>}
+                      </div>
+                    </div>
+                  ))
                   )}
                 </div>
               )}
