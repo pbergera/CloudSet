@@ -297,10 +297,6 @@ const guardarEdicion = async () => {
                 .map((p) => (
                 <div key={p.id} className="grid-item">
                   <img src={p.foto_url} alt={p.tipo} />
-                  <div style={{ padding: "4px 6px", fontSize: "11px", color: "#888", textAlign: "center" }}>
-                    <div style={{ fontWeight: "500", color: "#2c2c2a" }}>{p.tipo || "—"}</div>
-                    <div>{p.color === "sin color" || !p.color ? "—" : p.color}</div>
-                  </div>
                   <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
                     <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
                     <div style={{ width: "1px", background: "#f0ede6" }} />
