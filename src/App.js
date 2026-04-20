@@ -26,6 +26,7 @@ function App() {
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [ordenarPor, setOrdenarPor] = useState("categoria");
   const [momentoPrenda, setMomentoPrenda] = useState("");
+  const [momentoEditado, setMomentoEditado] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -184,7 +185,7 @@ const eliminarPrenda = async (id, foto_url) => {
 const guardarEdicion = async () => {
   await supabase
     .from("prendas")
-    .update({ tipo: tipoEditado, color: colorEditado })
+    .update({ tipo: tipoEditado, color: colorEditado, momento: momentoEditado || null })
     .eq("id", prendaEditando.id);
   await cargarPrendas();
   setPrendaEditando(null);
@@ -313,7 +314,7 @@ const guardarEdicion = async () => {
                       <div key={p.id} className="grid-item">
                         <img src={p.foto_url} alt={p.tipo} />
                         <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                          <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                          <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
                           <div style={{ width: "1px", background: "#f0ede6" }} />
                           <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
                         </div>
@@ -337,7 +338,7 @@ const guardarEdicion = async () => {
                         <div key={p.id} className="grid-item">
                           <img src={p.foto_url} alt={p.tipo} />
                           <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                            <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                            <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
                             <div style={{ width: "1px", background: "#f0ede6" }} />
                             <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
                           </div>
@@ -364,7 +365,7 @@ const guardarEdicion = async () => {
                       <div key={p.id} className="grid-item">
                         <img src={p.foto_url} alt={p.tipo} />
                         <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                          <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                          <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
                           <div style={{ width: "1px", background: "#f0ede6" }} />
                           <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
                         </div>
@@ -382,6 +383,17 @@ const guardarEdicion = async () => {
                   <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar prenda</h2>
                   <SelectorCategoria value={tipoEditado} onChange={setTipoEditado} placeholder="Tipo de prenda..." />
                   <input type="text" value={colorEditado} onChange={(e) => setColorEditado(e.target.value)} placeholder="Color" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
+                  <select value={momentoEditado} onChange={(e) => setMomentoEditado(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
+                    <option value="">Momento (opcional)</option>
+                    <option value="Casual">Casual</option>
+                    <option value="Arreglado">Arreglado</option>
+                    <option value="Deportivo">Deportivo</option>
+                    <option value="Noche">Noche</option>
+                    <option value="Día">Día</option>
+                    <option value="Playa">Playa</option>
+                    <option value="Trabajo">Trabajo</option>
+                    <option value="Formal">Formal</option>
+                  </select>
                   <button onClick={guardarEdicion} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
                   <button onClick={() => setPrendaEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
                 </div>
