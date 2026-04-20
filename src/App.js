@@ -197,13 +197,19 @@ const guardarEdicion = async () => {
 
   return (
     <div className="app">
-      <div className="header" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div>
-          <span className="logo">CloudSet</span>
-          {nombreUsuario && <div style={{ fontSize: "12px", color: "#888", marginTop: "2px" }}>Hola, {nombreUsuario}</div>}
+      <div className="header">
+        <div style={{ textAlign: "center", marginBottom: "12px" }}>
+          <span style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.12em", textTransform: "uppercase" }}>CloudSet</span>
         </div>
-        <div onClick={() => setSeccion("cuenta")} style={{ width: "36px", height: "36px", borderRadius: "50%", overflow: "hidden", border: "1px solid #e0ddd6", cursor: "pointer", background: "#f5f5f3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-          {fotoPerfil ? <img src={fotoPerfil} alt="perfil" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: "12px", color: "#888" }}>Yo</span>}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div>
+            <div style={{ fontSize: "22px", fontWeight: "500", color: "#2c2c2a" }}>
+              {nombreUsuario ? `Hola, ${nombreUsuario}` : "Hola"}
+            </div>
+          </div>
+          <div onClick={() => setSeccion("cuenta")} style={{ width: "44px", height: "44px", borderRadius: "50%", overflow: "hidden", border: "1px solid #e0ddd6", cursor: "pointer", background: "#f5f5f3", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            {fotoPerfil ? <img src={fotoPerfil} alt="perfil" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: "13px", color: "#888" }}>Yo</span>}
+          </div>
         </div>
       </div>
 
