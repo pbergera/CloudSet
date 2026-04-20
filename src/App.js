@@ -6,6 +6,7 @@ import "./App.css";
 import Outfits from "./Outfits";
 import Viajes from "./Viajes";
 import { CATEGORIAS } from "./categorias";
+import SelectorCategoria from "./SelectorCategoria";
 
 function App() {
   const [seccion, setSeccion] = useState("armario");
@@ -270,14 +271,7 @@ const guardarEdicion = async () => {
             ) : (
               <div>
                 <img src={prendaPrevia.url} alt="prenda" style={{ width: "100%", borderRadius: "8px", marginBottom: "12px" }} />
-                <select value={tipoPrenda} onChange={(e) => setTipoPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
-                  <option value="">Tipo de prenda...</option>
-                  {CATEGORIAS.map(g => (
-                    <optgroup key={g.grupo} label={g.grupo}>
-                      {g.opciones.map(o => <option key={o} value={o}>{o}</option>)}
-                    </optgroup>
-                  ))}
-                </select>
+                <SelectorCategoria value={tipoPrenda} onChange={setTipoPrenda} placeholder="Tipo de prenda..." />
                 <input type="text" placeholder="Color (ej: azul, negro...)" value={colorPrenda} onChange={(e) => setColorPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
                 <button onClick={guardarPrenda} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>
                   {cargando ? "Guardando..." : "Guardar prenda"}
@@ -310,14 +304,7 @@ const guardarEdicion = async () => {
               <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
                 <div style={{ background: "white", borderRadius: "12px", padding: "1.25rem", width: "300px" }}>
                   <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar prenda</h2>
-                  <select value={tipoEditado} onChange={(e) => setTipoEditado(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
-                    <option value="">Tipo de prenda...</option>
-                    {CATEGORIAS.map(g => (
-                      <optgroup key={g.grupo} label={g.grupo}>
-                        {g.opciones.map(o => <option key={o} value={o}>{o}</option>)}
-                      </optgroup>
-                    ))}
-                  </select>
+                  <SelectorCategoria value={tipoEditado} onChange={setTipoEditado} placeholder="Tipo de prenda..." />
                   <input type="text" value={colorEditado} onChange={(e) => setColorEditado(e.target.value)} placeholder="Color" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
                   <button onClick={guardarEdicion} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
                   <button onClick={() => setPrendaEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
