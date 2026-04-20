@@ -285,7 +285,13 @@ const guardarEdicion = async () => {
                 if (!grupos[clave]) grupos[clave] = [];
                 grupos[clave].push(p);
               });
-              return Object.entries(grupos).map(([grupo, items]) => (
+              const { TODAS_CATEGORIAS } = require("./categorias");
+              const ordenadas = [
+                ...TODAS_CATEGORIAS.filter(c => grupos[c]),
+                ...Object.keys(grupos).filter(g => !TODAS_CATEGORIAS.includes(g))
+              ];
+              return ordenadas.map(grupo => (
+                <div key={grupo} style={{ marginBottom: "16px" }}>
                 <div key={grupo} style={{ marginBottom: "16px" }}>
                   <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>{grupo}</div>
                   <div className="grid">

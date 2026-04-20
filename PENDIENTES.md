@@ -51,6 +51,9 @@
 - Editar prendas del armario desde el modal de edición de outfit
 - Las prendas aparezcan ordenadas por categorías, pero haya un desplegable que permita, o bien ordenarlas por categorías, o bien ordenarlas por estilo (Casual, Arreglado, Deportivo, Noche, Día, etc. Lo que hemos llamado "Momento" en Outfits")
 - en los filtros, poder filtrar también por color.
+- las prendas tienen que poder tener un "momento"
+- ordenar las prendas en el orden que habíamos previsto
+- tener un submenú dentro de "ordenar por categoría" que permita ver solo una categoría
 
 ---
 
