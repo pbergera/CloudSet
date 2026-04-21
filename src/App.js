@@ -6,7 +6,7 @@ import "./App.css";
 import Outfits from "./Outfits";
 import Viajes from "./Viajes";
 import SelectorCategoria from "./SelectorCategoria";
-import { TODAS_CATEGORIAS, CATEGORIAS } from "./categorias";
+import { CATEGORIAS } from "./categorias";
 
 function App() {
   const [seccion, setSeccion] = useState("armario");
