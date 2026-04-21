@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
 
-function Outfits({ usuario, prendas }) {
+function Outfits({ usuario, prendas, viajes }) {
   const [outfits, setOutfits] = useState([]);
   const [creando, setCreando] = useState(false);
   const [nombreOutfit, setNombreOutfit] = useState("");
@@ -14,6 +14,7 @@ function Outfits({ usuario, prendas }) {
   const [momentoEditado, setMomentoEditado] = useState("");
   const [ordenOutfits, setOrdenOutfits] = useState([]);
   const [momentosOutfit, setMomentosOutfit] = useState([]);
+  const [viajesSeleccionados, setViajesSeleccionados] = useState([]);
 
   useEffect(() => {
     cargarOutfits();
@@ -68,6 +69,7 @@ function Outfits({ usuario, prendas }) {
       usuario_id: usuario.id,
       nombre: nombreOutfit,
       evento: eventoOutfit || null,
+      viajes_ids: viajesSeleccionados,
       momento: momentosOutfit.length > 0 ? momentosOutfit[0] : null,
       momentos: momentosOutfit,
       prendas: seleccionadas
@@ -78,6 +80,7 @@ function Outfits({ usuario, prendas }) {
       setNombreOutfit("");
       setEventoOutfit("");
       setMomentosOutfit([]);
+      setViajesSeleccionados([]);
       setSeleccionadas([]);
     }
   };
@@ -180,6 +183,19 @@ function Outfits({ usuario, prendas }) {
             onChange={(e) => setEventoOutfit(e.target.value)}
             style={{ width: "100%", marginBottom: "14px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
           />
+          {viajes && viajes.length > 0 && (
+            <div style={{ marginBottom: "14px" }}>
+              <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Vincular a viaje (opcional):</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                {viajes.map(v => (
+                  <span key={v.id} onClick={() => setViajesSeleccionados(prev => prev.includes(v.id) ? prev.filter(x => x !== v.id) : [...prev, v.id])}
+                    style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: viajesSeleccionados.includes(v.id) ? "#2c2c2a" : "white", color: viajesSeleccionados.includes(v.id) ? "white" : "#888" }}>
+                    {v.nombre}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           <div style={{ marginBottom: "14px" }}>
             <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Momento (opcional):</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
