@@ -6,7 +6,7 @@ import "./App.css";
 import Outfits from "./Outfits";
 import Viajes from "./Viajes";
 import SelectorCategoria from "./SelectorCategoria";
-import { TODAS_CATEGORIAS } from "./categorias";
+import { TODAS_CATEGORIAS, CATEGORIAS } from "./categorias";
 
 function App() {
   const [seccion, setSeccion] = useState("armario");
@@ -317,48 +317,94 @@ const guardarEdicion = async () => {
                 if (!grupos[clave]) grupos[clave] = [];
                 grupos[clave].push(p);
               });
-              const ordenadas = [
-                ...TODAS_CATEGORIAS.filter(c => grupos[c]),
-                ...Object.keys(grupos).filter(g => !TODAS_CATEGORIAS.includes(g))
-              ];
-              const toggleCategoria = (cat) => {
-                setFiltroCategoriaActivo(prev =>
-                  prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat]
-                );
-              };
-              const categoriasMostradas = filtroCategoriaActivo.length > 0
-                ? ordenadas.filter(c => filtroCategoriaActivo.includes(c))
-                : ordenadas;
+
+              const renderPrendas = (items) => (
+                <div className="grid">
+                  {items.map(p => (
+                    <div key={p.id} className="grid-item">
+                      <img src={p.foto_url} alt={p.tipo} />
+                      <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
+                        <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColoresEditados(p.colores || []); setMomentosEditados(p.momentos || []); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                        <div style={{ width: "1px", background: "#f0ede6" }} />
+                        <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              );
+
               return (
                 <>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "14px" }}>
-                    {ordenadas.map(c => (
+                    {Object.keys(grupos).map(c => (
                       <span
                         key={c}
-                        onClick={() => toggleCategoria(c)}
+                        onClick={() => setFiltroCategoriaActivo(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c])}
                         style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: filtroCategoriaActivo.includes(c) ? "#2c2c2a" : "white", color: filtroCategoriaActivo.includes(c) ? "white" : "#888" }}
                       >
                         {c}
                       </span>
                     ))}
                   </div>
-                  {categoriasMostradas.map(grupo => (
-                    <div key={grupo} style={{ marginBottom: "16px" }}>
-                      <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>{grupo}</div>
-                      <div className="grid">
-                        {grupos[grupo].map(p => (
-                          <div key={p.id} className="grid-item">
-                            <img src={p.foto_url} alt={p.tipo} />
-                            <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                              <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColoresEditados(p.colores || []); setMomentosEditados(p.momentos || []); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
-                              <div style={{ width: "1px", background: "#f0ede6" }} />
-                              <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
+
+                  {CATEGORIAS.map(grupo => {
+                    const tieneGrupo = grupo.opciones
+                      ? grupo.opciones.some(o => grupos[o] && (filtroCategoriaActivo.length === 0 || filtroCategoriaActivo.includes(o)))
+                      : grupo.subgrupos.some(s =>
+                          s.opciones
+                            ? s.opciones.some(o => grupos[o] && (filtroCategoriaActivo.length === 0 || filtroCategoriaActivo.includes(o)))
+                            : grupos[s.subgrupo] && (filtroCategoriaActivo.length === 0 || filtroCategoriaActivo.includes(s.subgrupo))
+                        );
+                    if (!tieneGrupo) return null;
+
+                    return (
+                      <div key={grupo.grupo} style={{ marginBottom: "20px" }}>
+                        <div style={{ fontSize: "13px", fontWeight: "600", color: "#2c2c2a", letterSpacing: "0.06em", marginBottom: "10px", paddingBottom: "6px", borderBottom: "2px solid #2c2c2a" }}>{grupo.grupo}</div>
+
+                        {grupo.opciones && grupo.opciones
+                          .filter(o => grupos[o] && (filtroCategoriaActivo.length === 0 || filtroCategoriaActivo.includes(o)))
+                          .map(o => (
+                            <div key={o} style={{ marginBottom: "14px" }}>
+                              <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>{o}</div>
+                              {renderPrendas(grupos[o])}
                             </div>
-                          </div>
-                        ))}
+                          ))
+                        }
+
+                        {grupo.subgrupos && grupo.subgrupos.map(s => {
+                          const itemsSubgrupo = s.opciones
+                            ? s.opciones.filter(o => grupos[o] && (filtroCategoriaActivo.length === 0 || filtroCategoriaActivo.includes(o)))
+                            : null;
+                          const tieneItems = s.opciones
+                            ? itemsSubgrupo.length > 0
+                            : grupos[s.subgrupo] && (filtroCategoriaActivo.length === 0 || filtroCategoriaActivo.includes(s.subgrupo));
+                          if (!tieneItems) return null;
+
+                          return (
+                            <div key={s.subgrupo} style={{ marginBottom: "14px" }}>
+                              <div style={{ fontSize: "12px", fontWeight: "500", color: "#555", letterSpacing: "0.06em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #e0ddd6" }}>{s.subgrupo}</div>
+                              {s.opciones
+                                ? itemsSubgrupo.map(o => (
+                                    <div key={o} style={{ marginBottom: "10px" }}>
+                                      <div style={{ fontSize: "11px", color: "#aaa", marginBottom: "6px", paddingLeft: "8px" }}>{o}</div>
+                                      {renderPrendas(grupos[o])}
+                                    </div>
+                                  ))
+                                : renderPrendas(grupos[s.subgrupo])
+                              }
+                            </div>
+                          );
+                        })}
                       </div>
+                    );
+                  })}
+
+                  {grupos["Sin categoría"] && (filtroCategoriaActivo.length === 0 || filtroCategoriaActivo.includes("Sin categoría")) && (
+                    <div style={{ marginBottom: "16px" }}>
+                      <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>Sin categoría</div>
+                      {renderPrendas(grupos["Sin categoría"])}
                     </div>
-                  ))}
+                  )}
                 </>
               );
             })()}
