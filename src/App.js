@@ -17,16 +17,16 @@ function App() {
   const [cargandoSesion, setCargandoSesion] = useState(true);
   const [prendaPrevia, setPrendaPrevia] = useState(null);
   const [tipoPrenda, setTipoPrenda] = useState("");
-  const [colorPrenda, setColorPrenda] = useState("");
+  const [coloresPrenda, setColoresPrenda] = useState([]);
   const [outfitsList, setOutfitsList] = useState([]);
   const [prendaEditando, setPrendaEditando] = useState(null);
   const [tipoEditado, setTipoEditado] = useState("");
-  const [colorEditado, setColorEditado] = useState("");
+  const [coloresEditados, setColoresEditados] = useState([]);
   const [fotoPerfil, setFotoPerfil] = useState(null);
   const [nombreUsuario, setNombreUsuario] = useState("");
   const [ordenarPor, setOrdenarPor] = useState("categoria");
-  const [momentoPrenda, setMomentoPrenda] = useState("");
-  const [momentoEditado, setMomentoEditado] = useState("");
+  const [momentosPrenda, setMomentosPrenda] = useState([]);
+  const [momentosEditados, setMomentosEditados] = useState([]);
   const [filtroColorActivo, setFiltroColorActivo] = useState([]);
   const [filtroMomentoActivo, setFiltroMomentoActivo] = useState([]);
   const [filtroCategoriaActivo, setFiltroCategoriaActivo] = useState([]);
@@ -99,8 +99,8 @@ const seleccionarFoto = (e) => {
   const url = URL.createObjectURL(file);
   setPrendaPrevia({ file, url });
   setTipoPrenda("");
-  setColorPrenda("");
-  setMomentoPrenda("");
+  setColoresPrenda([]);
+  setMomentosPrenda([]);
   analizarPrendaConIA(file);
 };
 
@@ -166,8 +166,10 @@ const guardarPrenda = async () => {
     .insert({
       foto_url: urlData.publicUrl,
       tipo: tipoPrenda || "sin clasificar",
-      color: colorPrenda || "sin color",
-      momento: momentoPrenda || null,
+      color: coloresPrenda.length > 0 ? coloresPrenda.join(", ") : "sin color",
+      colores: coloresPrenda,
+      momento: momentosPrenda.length > 0 ? momentosPrenda[0] : null,
+      momentos: momentosPrenda,
       usuario_id: usuario.id
     });
 
@@ -188,7 +190,7 @@ const eliminarPrenda = async (id, foto_url) => {
 const guardarEdicion = async () => {
   await supabase
     .from("prendas")
-    .update({ tipo: tipoEditado, color: colorEditado, momento: momentoEditado || null })
+    .update({ tipo: tipoEditado, color: coloresEditados.length > 0 ? coloresEditados.join(", ") : "sin color", colores: coloresEditados, momento: momentosEditados.length > 0 ? momentosEditados[0] : null, momentos: momentosEditados })
     .eq("id", prendaEditando.id);
   await cargarPrendas();
   setPrendaEditando(null);
@@ -274,18 +276,28 @@ const guardarEdicion = async () => {
               <div>
                 <img src={prendaPrevia.url} alt="prenda" style={{ width: "100%", borderRadius: "8px", marginBottom: "12px" }} />
                 <SelectorCategoria value={tipoPrenda} onChange={setTipoPrenda} placeholder="Tipo de prenda..." />
-                <input type="text" placeholder="Color (ej: azul, negro...)" value={colorPrenda} onChange={(e) => setColorPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
-                <select value={momentoPrenda} onChange={(e) => setMomentoPrenda(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
-                  <option value="">Momento (opcional)</option>
-                  <option value="Casual">Casual</option>
-                  <option value="Arreglado">Arreglado</option>
-                  <option value="Deportivo">Deportivo</option>
-                  <option value="Noche">Noche</option>
-                  <option value="Día">Día</option>
-                  <option value="Playa">Playa</option>
-                  <option value="Trabajo">Trabajo</option>
-                  <option value="Formal">Formal</option>
-                </select>
+                <div style={{ marginBottom: "10px" }}>
+                  <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Color (selecciona o escribe):</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "6px" }}>
+                    {["Negro", "Blanco", "Gris", "Beige", "Marron", "Rojo", "Rosa", "Naranja", "Amarillo", "Verde", "Azul", "Morado", "Dorado", "Plateado", "Estampado"].map(c => (
+                      <span key={c} onClick={() => setColoresPrenda(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c])}
+                        style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: coloresPrenda.includes(c) ? "#2c2c2a" : "white", color: coloresPrenda.includes(c) ? "white" : "#888" }}>
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div style={{ marginBottom: "10px" }}>
+                  <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Momento (opcional):</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                    {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => (
+                      <span key={m} onClick={() => setMomentosPrenda(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m])}
+                        style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: momentosPrenda.includes(m) ? "#2c2c2a" : "white", color: momentosPrenda.includes(m) ? "white" : "#888" }}>
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                </div>
                 <button onClick={guardarPrenda} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>
                   {cargando ? "Guardando..." : "Guardar prenda"}
                 </button>
@@ -338,7 +350,7 @@ const guardarEdicion = async () => {
                           <div key={p.id} className="grid-item">
                             <img src={p.foto_url} alt={p.tipo} />
                             <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                              <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                              <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColoresEditados(p.colores || []); setMomentosEditados(p.momentos || []); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
                               <div style={{ width: "1px", background: "#f0ede6" }} />
                               <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
                             </div>
@@ -385,7 +397,7 @@ const guardarEdicion = async () => {
                             <div key={p.id} className="grid-item">
                               <img src={p.foto_url} alt={p.tipo} />
                               <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                                <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                                <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColoresEditados(p.colores || []); setMomentosEditados(p.momentos || []); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
                                 <div style={{ width: "1px", background: "#f0ede6" }} />
                                 <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
                               </div>
@@ -436,7 +448,7 @@ const guardarEdicion = async () => {
                           <div key={p.id} className="grid-item">
                             <img src={p.foto_url} alt={p.tipo} />
                             <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                              <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                              <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColoresEditados(p.colores || []); setMomentosEditados(p.momentos || []); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
                               <div style={{ width: "1px", background: "#f0ede6" }} />
                               <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
                             </div>
@@ -455,18 +467,28 @@ const guardarEdicion = async () => {
                 <div style={{ background: "white", borderRadius: "12px", padding: "1.25rem", width: "300px" }}>
                   <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar prenda</h2>
                   <SelectorCategoria value={tipoEditado} onChange={setTipoEditado} placeholder="Tipo de prenda..." />
-                  <input type="text" value={colorEditado} onChange={(e) => setColorEditado(e.target.value)} placeholder="Color" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
-                  <select value={momentoEditado} onChange={(e) => setMomentoEditado(e.target.value)} style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
-                    <option value="">Momento (opcional)</option>
-                    <option value="Casual">Casual</option>
-                    <option value="Arreglado">Arreglado</option>
-                    <option value="Deportivo">Deportivo</option>
-                    <option value="Noche">Noche</option>
-                    <option value="Día">Día</option>
-                    <option value="Playa">Playa</option>
-                    <option value="Trabajo">Trabajo</option>
-                    <option value="Formal">Formal</option>
-                  </select>
+                  <div style={{ marginBottom: "10px" }}>
+                    <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Color:</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      {["Negro", "Blanco", "Gris", "Beige", "Marron", "Rojo", "Rosa", "Naranja", "Amarillo", "Verde", "Azul", "Morado", "Dorado", "Plateado", "Estampado"].map(c => (
+                        <span key={c} onClick={() => setColoresEditados(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c])}
+                          style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: coloresEditados.includes(c) ? "#2c2c2a" : "white", color: coloresEditados.includes(c) ? "white" : "#888" }}>
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div style={{ marginBottom: "10px" }}>
+                    <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Momento:</p>
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                      {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => (
+                        <span key={m} onClick={() => setMomentosEditados(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m])}
+                          style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: momentosEditados.includes(m) ? "#2c2c2a" : "white", color: momentosEditados.includes(m) ? "white" : "#888" }}>
+                          {m}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                   <button onClick={guardarEdicion} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
                   <button onClick={() => setPrendaEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
                 </div>
