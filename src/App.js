@@ -28,6 +28,7 @@ function App() {
   const [momentoPrenda, setMomentoPrenda] = useState("");
   const [momentoEditado, setMomentoEditado] = useState("");
   const [filtroColorActivo, setFiltroColorActivo] = useState([]);
+  const [filtroMomentoActivo, setFiltroMomentoActivo] = useState([]);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -327,28 +328,51 @@ const guardarEdicion = async () => {
             })()}
 
             {ordenarPor === "momento" && (() => {
-              const momentos = ["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Sin momento"];
-              return momentos.map(momento => {
-                const items = prendas.filter(p => (p.momento || "Sin momento") === momento);
-                if (items.length === 0) return null;
-                return (
-                  <div key={momento} style={{ marginBottom: "16px" }}>
-                    <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>{momento}</div>
-                    <div className="grid">
-                      {items.map(p => (
-                        <div key={p.id} className="grid-item">
-                          <img src={p.foto_url} alt={p.tipo} />
-                          <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
-                            <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
-                            <div style={{ width: "1px", background: "#f0ede6" }} />
-                            <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+              const momentos = ["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal", "Sin momento"];
+              const toggleMomento = (momento) => {
+                setFiltroMomentoActivo(prev =>
+                  prev.includes(momento) ? prev.filter(m => m !== momento) : [...prev, momento]
                 );
-              });
+              };
+              const momentosMostrados = filtroMomentoActivo.length > 0
+                ? momentos.filter(m => filtroMomentoActivo.includes(m))
+                : momentos;
+              return (
+                <>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "14px" }}>
+                    {momentos.map(m => (
+                      <span
+                        key={m}
+                        onClick={() => toggleMomento(m)}
+                        style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: filtroMomentoActivo.includes(m) ? "#2c2c2a" : "white", color: filtroMomentoActivo.includes(m) ? "white" : "#888" }}
+                      >
+                        {m}
+                      </span>
+                    ))}
+                  </div>
+                  {momentosMostrados.map(momento => {
+                    const items = prendas.filter(p => (p.momento || "Sin momento") === momento);
+                    if (items.length === 0) return null;
+                    return (
+                      <div key={momento} style={{ marginBottom: "16px" }}>
+                        <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>{momento}</div>
+                        <div className="grid">
+                          {items.map(p => (
+                            <div key={p.id} className="grid-item">
+                              <img src={p.foto_url} alt={p.tipo} />
+                              <div style={{ display: "flex", borderTop: "1px solid #f0ede6" }}>
+                                <div onClick={() => { setPrendaEditando(p); setTipoEditado(p.tipo); setColorEditado(p.color); setMomentoEditado(p.momento || ""); }} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#2c2c2a", textAlign: "center", cursor: "pointer" }}>Editar</div>
+                                <div style={{ width: "1px", background: "#f0ede6" }} />
+                                <div onClick={() => eliminarPrenda(p.id, p.foto_url)} style={{ flex: 1, padding: "4px", fontSize: "11px", color: "#cc3333", textAlign: "center", cursor: "pointer" }}>Eliminar</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              );
             })()}
 
             {ordenarPor === "color" && (() => {
