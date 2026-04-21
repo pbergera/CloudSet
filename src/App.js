@@ -30,6 +30,7 @@ function App() {
   const [filtroColorActivo, setFiltroColorActivo] = useState([]);
   const [filtroMomentoActivo, setFiltroMomentoActivo] = useState([]);
   const [filtroCategoriaActivo, setFiltroCategoriaActivo] = useState([]);
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
