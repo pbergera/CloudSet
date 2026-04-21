@@ -176,13 +176,7 @@ function Outfits({ usuario, prendas, viajes }) {
             onChange={(e) => setNombreOutfit(e.target.value)}
             style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
           />
-          <input
-            type="text"
-            placeholder="Evento o viaje (opcional)"
-            value={eventoOutfit}
-            onChange={(e) => setEventoOutfit(e.target.value)}
-            style={{ width: "100%", marginBottom: "14px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
-          />
+          
           {viajes && viajes.length > 0 && (
             <div style={{ marginBottom: "14px" }}>
               <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Vincular a viaje (opcional):</p>
