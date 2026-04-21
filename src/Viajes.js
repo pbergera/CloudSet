@@ -64,6 +64,18 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
       outfits: outfitsSeleccionados
     });
     if (!error) {
+      const { data: nuevoViaje } = await supabase
+        .from("viajes")
+        .select("id")
+        .eq("usuario_id", usuario.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+      if (nuevoViaje && outfitsSeleccionados.length > 0) {
+        await supabase.from("outfit_viaje").insert(
+          outfitsSeleccionados.map(o => ({ outfit_id: o, viaje_id: nuevoViaje.id }))
+        );
+      }
       await cargarViajes();
       setCreando(false);
       setNombre("");

@@ -59,6 +59,7 @@
 
 ### 🔧 Pendiente
 - Editar prendas del armario desde el modal de edición de outfit
+- la IA que detecta el tipo de prenda lo tiene que vincular con una de las categorías que hemos creado
 
 
 
