@@ -33,6 +33,17 @@ function Outfits({ usuario, prendas }) {
    await cargarOutfits();
   };
 
+  const duplicarOutfit = async (o) => {
+   const { error } = await supabase.from("outfits").insert({
+    usuario_id: usuario.id,
+    nombre: o.nombre + " (copia)",
+    evento: o.evento || null,
+    momento: o.momento || null,
+    prendas: o.prendas || []
+   });
+   if (!error) await cargarOutfits();
+  };
+
   const guardarEdicionOutfit = async () => {
    await supabase.from("outfits").update({
     nombre: nombreEditado,
@@ -95,6 +106,7 @@ function Outfits({ usuario, prendas }) {
                 <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || ""); setMomentoEditado(o.momento || ""); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={() => duplicarOutfit(o)} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Duplicar</div>
                   <div onClick={() => eliminarOutfit(o.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
                 </div>
               </div>

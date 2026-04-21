@@ -55,10 +55,11 @@
 - Al crear o editar una prenda, poder poner varios colores o varios momentos
 - en filtro por momentos: si una prenda tiene varios momentos, me parece bien que la clasifiques en uno de ellos aleatoriamente. Pero si por ejemplo una prenda tiene "Casual" y "Día", y la clasificas en "Día", pero yo filtro "Casual", sí quiero verla. Quiero ver todas las prendas que al menos tengan esa categoría.
 - en filtro por color: si una prenda tiene varios colores, métela en una de las categorías, pero si filtro por cualquiera de los colores que la incluyen quiero que aparezca. Por ejemplo, una camisa tiene "Azul" y "Gris". La clasificas, por ejemplo, en Gris. Pero si yo filtro "Azul", quiero verla
+- ordenar las prendas en el orden que habíamos previsto, mostrando tipo "PRENDAS" -> subgrupos con posibilidad de desplegable
 
 ### 🔧 Pendiente
 - Editar prendas del armario desde el modal de edición de outfit
-- ordenar las prendas en el orden que habíamos previsto, mostrando tipo "PRENDAS" -> subgrupos con posibilidad de desplegable
+
 
 
 ---
@@ -76,6 +77,7 @@
 - Editar prendas dentro de un outfit ya creado (añadir, quitar, cambiar)
 - al crear nuevo Outfit, en "Evento o viaje (opcional)", poder elegir un Viaje de la pestaña Viajes.
 - Ordenar los outftis por su categoría (Día, Noche, etc)
+- poder por ejemplo duplicar un outfit y luego editarlo (por ejemplo, me encanta tal outfit, y hago una versión parecida)
 
 
 ---
