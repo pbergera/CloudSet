@@ -8,7 +8,6 @@ function Outfits({ usuario, prendas }) {
   const [nombreOutfit, setNombreOutfit] = useState("");
   const [eventoOutfit, setEventoOutfit] = useState("");
   const [seleccionadas, setSeleccionadas] = useState([]);
-  const [momentoOutfit, setMomentoOutfit] = useState("");
   const [outfitEditando, setOutfitEditando] = useState(null);
   const [nombreEditado, setNombreEditado] = useState("");
   const [eventoEditado, setEventoEditado] = useState("");
