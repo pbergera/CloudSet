@@ -49,7 +49,8 @@ function Outfits({ usuario, prendas }) {
    await supabase.from("outfits").update({
     nombre: nombreEditado,
     evento: eventoEditado || null,
-    momento: momentoEditado || null
+    momento: Array.isArray(momentoEditado) && momentoEditado.length > 0 ? momentoEditado[0] : momentoEditado || null,
+    momentos: Array.isArray(momentoEditado) ? momentoEditado : momentoEditado ? [momentoEditado] : [],
    }).eq("id", outfitEditando.id);
    await cargarOutfits();
    setOutfitEditando(null);
@@ -120,7 +121,7 @@ function Outfits({ usuario, prendas }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || ""); setMomentoEditado(o.momento || ""); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || ""); setMomentoEditado(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
                   <div onClick={() => duplicarOutfit(o)} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Duplicar</div>
                   <div onClick={() => eliminarOutfit(o.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
                 </div>
@@ -145,18 +146,17 @@ function Outfits({ usuario, prendas }) {
             <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar outfit</h2>
             <input type="text" value={nombreEditado} onChange={(e) => setNombreEditado(e.target.value)} placeholder="Nombre del outfit" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
             <input type="text" value={eventoEditado} onChange={(e) => setEventoEditado(e.target.value)} placeholder="Evento o viaje (opcional)" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
-            <select value={momentoEditado} onChange={(e) => setMomentoEditado(e.target.value)} style={{ width: "100%", marginBottom: "14px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}>
-              <option value="">Momento (opcional)</option>
-              <option value="Día">Día</option>
-              <option value="Noche">Noche</option>
-              <option value="Cena">Cena</option>
-              <option value="Playa">Playa</option>
-              <option value="Deporte">Deporte</option>
-              <option value="Trabajo">Trabajo</option>
-              <option value="Casual">Casual</option>
-              <option value="Formal">Formal</option>
-              <option value="Viaje">Viaje</option>
-            </select>
+            <div style={{ marginBottom: "14px" }}>
+              <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Momento (opcional):</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => (
+                  <span key={m} onClick={() => setMomentoEditado(prev => Array.isArray(prev) ? (prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m]) : [m])}
+                    style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: (Array.isArray(momentoEditado) ? momentoEditado : [momentoEditado]).includes(m) ? "#2c2c2a" : "white", color: (Array.isArray(momentoEditado) ? momentoEditado : [momentoEditado]).includes(m) ? "white" : "#888" }}>
+                    {m}
+                  </span>
+                ))}
+              </div>
+            </div>
             <button onClick={guardarEdicionOutfit} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
             <button onClick={() => setOutfitEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
           </div>
