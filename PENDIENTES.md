@@ -80,11 +80,12 @@
 - al crear nuevo Outfit, en "Evento o viaje (opcional)", poder elegir uno o varios Viajes de la pestaña Viajes.
 - al crear un outfit, sigue habiendo un menú que pone "Evento o viaje (opcional)". Yo creo que esta línea no aporta nada.
 - Sí me deja vincular un outfit a un viaje pero luego en la pestaña de viajes no se ha actualizado el viaje con el Outfit y la maleta
+- Al editar un outfit, quitar la línea de "Evento o viaje"
+- Al editar un outfit, poder vincularlo a un viaje.
 
 ### 🔧 Pendiente
 - Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
-- Al editar un outfit, quitar la línea de "Evento o viaje"
-- Al editar un outfit, poder vincularlo a un viaje.
+
 
 
 

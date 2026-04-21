@@ -16,6 +16,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
   const [momentosOutfit, setMomentosOutfit] = useState([]);
   const [viajesSeleccionados, setViajesSeleccionados] = useState([]);
   const [viajesEditados, setViajesEditados] = useState([]);
+  const [prendasEditadas, setPrendasEditadas] = useState([]);
 
   useEffect(() => {
     cargarOutfits();
@@ -53,6 +54,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
     evento: eventoEditado || null,
     momento: Array.isArray(momentoEditado) && momentoEditado.length > 0 ? momentoEditado[0] : momentoEditado || null,
     momentos: Array.isArray(momentoEditado) ? momentoEditado : momentoEditado ? [momentoEditado] : [],
+    prendas: prendasEditadas,
    }).eq("id", outfitEditando.id);
 
    await supabase.from("outfit_viaje").delete().eq("outfit_id", outfitEditando.id);
@@ -149,7 +151,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || "");  setViajesEditados((o.viajes_ids || [])); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || ""); setMomentoEditado(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []); setViajesEditados(o.viajes_ids || []); setPrendasEditadas(o.prendas || []); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
                   <div onClick={() => duplicarOutfit(o)} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Duplicar</div>
                   <div onClick={() => eliminarOutfit(o.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
                 </div>
@@ -184,6 +186,34 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
                 ))}
               </div>
             </div>
+
+            <div style={{ marginBottom: "14px" }}>
+              <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Prendas del outfit:</p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "8px" }}>
+                {prendasEditadas.map(id => {
+                  const p = prendas.find(x => x.id === id);
+                  return p ? (
+                    <div key={id} style={{ position: "relative" }}>
+                      <img src={p.foto_url} alt={p.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6" }} />
+                      <div onClick={() => setPrendasEditadas(prev => prev.filter(x => x !== id))}
+                        style={{ position: "absolute", top: "-4px", right: "-4px", width: "16px", height: "16px", borderRadius: "50%", background: "#cc3333", color: "white", fontSize: "10px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                        ×
+                      </div>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+              <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Añadir prendas:</p>
+              <div className="grid">
+                {prendas.filter(p => !prendasEditadas.includes(p.id)).map(p => (
+                  <div key={p.id} onClick={() => setPrendasEditadas(prev => [...prev, p.id])}
+                    style={{ cursor: "pointer", borderRadius: "8px", overflow: "hidden", border: "1px solid #e0ddd6" }}>
+                    <img src={p.foto_url} alt={p.tipo} style={{ width: "100%", aspectRatio: "1", objectFit: "cover" }} />
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {viajes && viajes.length > 0 && (
               <div style={{ marginBottom: "14px" }}>
                 <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Vincular a viaje (opcional):</p>
@@ -214,6 +244,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
             style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
           />
           
+
           {viajes && viajes.length > 0 && (
             <div style={{ marginBottom: "14px" }}>
               <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Vincular a viaje (opcional):</p>
