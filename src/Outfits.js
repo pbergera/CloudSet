@@ -14,6 +14,7 @@ function Outfits({ usuario, prendas }) {
   const [eventoEditado, setEventoEditado] = useState("");
   const [momentoEditado, setMomentoEditado] = useState("");
   const [ordenOutfits, setOrdenOutfits] = useState([]);
+  const [momentosOutfit, setMomentosOutfit] = useState([]);
 
   useEffect(() => {
     cargarOutfits();
@@ -67,7 +68,8 @@ function Outfits({ usuario, prendas }) {
       usuario_id: usuario.id,
       nombre: nombreOutfit,
       evento: eventoOutfit || null,
-      momento: momentoOutfit || null,
+      momento: momentosOutfit.length > 0 ? momentosOutfit[0] : null,
+      momentos: momentosOutfit,
       prendas: seleccionadas
     });
     if (!error) {
@@ -76,6 +78,7 @@ function Outfits({ usuario, prendas }) {
       setNombreOutfit("");
       setEventoOutfit("");
       setMomentoOutfit("");
+      setMomentosOutfit([]);
       setSeleccionadas([]);
     }
   };
@@ -177,22 +180,17 @@ function Outfits({ usuario, prendas }) {
             onChange={(e) => setEventoOutfit(e.target.value)}
             style={{ width: "100%", marginBottom: "14px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
           />
-          <select
-            value={momentoOutfit}
-            onChange={(e) => setMomentoOutfit(e.target.value)}
-            style={{ width: "100%", marginBottom: "14px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
-          >
-            <option value="">Momento (opcional)</option>
-            <option value="Día">Día</option>
-            <option value="Noche">Noche</option>
-            <option value="Cena">Cena</option>
-            <option value="Playa">Playa</option>
-            <option value="Deporte">Deporte</option>
-            <option value="Trabajo">Trabajo</option>
-            <option value="Casual">Casual</option>
-            <option value="Formal">Formal</option>
-            <option value="Viaje">Viaje</option>
-          </select>
+          <div style={{ marginBottom: "14px" }}>
+            <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Momento (opcional):</p>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+              {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => (
+                <span key={m} onClick={() => setMomentosOutfit(prev => prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m])}
+                  style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: momentosOutfit.includes(m) ? "#2c2c2a" : "white", color: momentosOutfit.includes(m) ? "white" : "#888" }}>
+                  {m}
+                </span>
+              ))}
+            </div>
+          </div>
           <p style={{ fontSize: "13px", color: "#888", marginBottom: "10px" }}>Selecciona las prendas:</p>
           <div className="grid" style={{ marginBottom: "14px" }}>
             {prendas.map(p => (
