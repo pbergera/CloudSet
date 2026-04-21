@@ -85,6 +85,8 @@
 
 ### 🔧 Pendiente
 - Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
+- Algunos outfits en lugar del momento, aparece un []
+
 
 
 
@@ -105,7 +107,8 @@
 - Editar outfits asignados a un viaje (añadir, quitar, cambiar)
 - Organizar outfits dentro del viaje por tipo de plan
 - Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
-
+- Valorar que no sea obligatorio el lugar en un viaje
+- Cambiar nombre a "viaje o evento"
 ---
 
 ## 👤 PERFIL & CUENTA

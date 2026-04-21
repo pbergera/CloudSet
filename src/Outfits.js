@@ -151,7 +151,15 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || ""); setMomentoEditado(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []); setViajesEditados(o.viajes_ids || []); setPrendasEditadas(o.prendas || []); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={async () => {
+                    setOutfitEditando(o);
+                    setNombreEditado(o.nombre);
+                    setEventoEditado(o.evento || "");
+                    setMomentoEditado(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []);
+                    setPrendasEditadas(o.prendas || []);
+                    const { data: relacionesViajes } = await supabase.from("outfit_viaje").select("viaje_id").eq("outfit_id", o.id);
+                    setViajesEditados(relacionesViajes ? relacionesViajes.map(r => r.viaje_id) : []);
+                  }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
                   <div onClick={() => duplicarOutfit(o)} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Duplicar</div>
                   <div onClick={() => eliminarOutfit(o.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
                 </div>
