@@ -25,7 +25,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   const cargarViajes = async () => {
     const { data, error } = await supabase
       .from("viajes")
-      .select("*")
+      .select("*, outfit_viaje(outfit_id)")
       .eq("usuario_id", usuario.id)
       .order("fecha_inicio", { ascending: true });
     if (!error && data) setViajes(data);
@@ -82,8 +82,13 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
     return dias;
   };
 
-  const outfitsDeViaje = (ids) =>
-    outfits.filter(o => (ids || []).includes(o.id));
+  const outfitsDeViaje = (v) => {
+    const ids = (v.outfit_viaje || []).map(r => r.outfit_id);
+    const outfitsDirectos = outfits.filter(o => ids.includes(o.id));
+    const outfitsVinculados = outfits.filter(o => (o.viajes_ids || []).includes(v.id));
+    const todos = [...outfitsDirectos, ...outfitsVinculados];
+    return todos.filter((o, i, arr) => arr.findIndex(x => x.id === o.id) === i);
+  };
 
   return (
     <div className="seccion">
@@ -122,11 +127,11 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
               {viajeAbierto === v.id && (
                 <div style={{ marginTop: "10px" }}>
                   <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Outfits asignados:</p>
-                  {outfitsDeViaje(v.outfits).length === 0 ? (
+                  {outfitsDeViaje(v).length === 0 ? (
                     <p style={{ fontSize: "12px", color: "#aaa" }}>Sin outfits asignados</p>
                   ) : (
                     <>
-                      {outfitsDeViaje(v.outfits).map(o => (
+                      {outfitsDeViaje(v).map(o => (
                         <div key={o.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
                           <div style={{ display: "flex", gap: "3px" }}>
                             {(o.prendas || []).slice(0, 3).map(id => {
@@ -144,7 +149,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
                       <div style={{ marginTop: "12px" }}>
                         <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Mi maleta:</p>
                         <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                          {[...new Set(outfitsDeViaje(v.outfits).flatMap(o => o.prendas || []))].map(id => {
+                          {[...new Set(outfitsDeViaje(v).flatMap(o => o.prendas || []))].map(id => {
                             const prenda = prendas.find(p => p.id === id);
                             return prenda ? (
                               <div key={id} style={{ textAlign: "center" }}>

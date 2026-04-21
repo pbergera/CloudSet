@@ -75,14 +75,29 @@ function Outfits({ usuario, prendas, viajes }) {
       prendas: seleccionadas
     });
     if (!error) {
-      await cargarOutfits();
-      setCreando(false);
-      setNombreOutfit("");
-      setEventoOutfit("");
-      setMomentosOutfit([]);
-      setViajesSeleccionados([]);
-      setSeleccionadas([]);
+     await cargarOutfits();
+     // vincular a viajes
+     if (viajesSeleccionados.length > 0) {
+      const { data: nuevoOutfit } = await supabase
+        .from("outfits")
+        .select("id")
+        .eq("usuario_id", usuario.id)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .single();
+      if (nuevoOutfit) {
+        await supabase.from("outfit_viaje").insert(
+          viajesSeleccionados.map(v => ({ outfit_id: nuevoOutfit.id, viaje_id: v }))
+        );
+      }
     }
+    setCreando(false);
+    setNombreOutfit("");
+    setEventoOutfit("");
+    setMomentosOutfit([]);
+    setViajesSeleccionados([]);
+    setSeleccionadas([]);
+   }
   };
 
   const prendasDeOutfit = (ids) =>
