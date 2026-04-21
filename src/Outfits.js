@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
 
-function Outfits({ usuario, prendas, viajes }) {
+function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
   const [outfits, setOutfits] = useState([]);
   const [creando, setCreando] = useState(false);
   const [nombreOutfit, setNombreOutfit] = useState("");
@@ -15,6 +15,7 @@ function Outfits({ usuario, prendas, viajes }) {
   const [ordenOutfits, setOrdenOutfits] = useState([]);
   const [momentosOutfit, setMomentosOutfit] = useState([]);
   const [viajesSeleccionados, setViajesSeleccionados] = useState([]);
+  const [viajesEditados, setViajesEditados] = useState([]);
 
   useEffect(() => {
     cargarOutfits();
@@ -53,7 +54,16 @@ function Outfits({ usuario, prendas, viajes }) {
     momento: Array.isArray(momentoEditado) && momentoEditado.length > 0 ? momentoEditado[0] : momentoEditado || null,
     momentos: Array.isArray(momentoEditado) ? momentoEditado : momentoEditado ? [momentoEditado] : [],
    }).eq("id", outfitEditando.id);
+
+   await supabase.from("outfit_viaje").delete().eq("outfit_id", outfitEditando.id);
+   if (viajesEditados.length > 0) {
+    await supabase.from("outfit_viaje").insert(
+      viajesEditados.map(v => ({ outfit_id: outfitEditando.id, viaje_id: v }))
+    );
+   }
+
    await cargarOutfits();
+   if (onRefrescarViajes) onRefrescarViajes();
    setOutfitEditando(null);
   };
 
@@ -139,7 +149,7 @@ function Outfits({ usuario, prendas, viajes }) {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || ""); setMomentoEditado(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={() => { setOutfitEditando(o); setNombreEditado(o.nombre); setEventoEditado(o.evento || "");  setViajesEditados((o.viajes_ids || [])); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
                   <div onClick={() => duplicarOutfit(o)} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Duplicar</div>
                   <div onClick={() => eliminarOutfit(o.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
                 </div>
@@ -163,7 +173,6 @@ function Outfits({ usuario, prendas, viajes }) {
           <div style={{ background: "white", borderRadius: "12px", padding: "1.25rem", width: "300px" }}>
             <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar outfit</h2>
             <input type="text" value={nombreEditado} onChange={(e) => setNombreEditado(e.target.value)} placeholder="Nombre del outfit" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
-            <input type="text" value={eventoEditado} onChange={(e) => setEventoEditado(e.target.value)} placeholder="Evento o viaje (opcional)" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
             <div style={{ marginBottom: "14px" }}>
               <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Momento (opcional):</p>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
@@ -175,6 +184,19 @@ function Outfits({ usuario, prendas, viajes }) {
                 ))}
               </div>
             </div>
+            {viajes && viajes.length > 0 && (
+              <div style={{ marginBottom: "14px" }}>
+                <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Vincular a viaje (opcional):</p>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                  {viajes.map(v => (
+                    <span key={v.id} onClick={() => setViajesEditados(prev => prev.includes(v.id) ? prev.filter(x => x !== v.id) : [...prev, v.id])}
+                      style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: viajesEditados.includes(v.id) ? "#2c2c2a" : "white", color: viajesEditados.includes(v.id) ? "white" : "#888" }}>
+                      {v.nombre}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
             <button onClick={guardarEdicionOutfit} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
             <button onClick={() => setOutfitEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
           </div>

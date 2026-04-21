@@ -561,7 +561,7 @@ const guardarEdicion = async () => {
       )}
 
       {seccion === "outfits" && (
-       <Outfits usuario={usuario} prendas={prendas} viajes={viajesList} />
+       <Outfits usuario={usuario} prendas={prendas} viajes={viajesList} onRefrescarViajes={cargarViajes} />
       )}
 
     {seccion === "viajes" && (
