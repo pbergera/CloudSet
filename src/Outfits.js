@@ -13,7 +13,7 @@ function Outfits({ usuario, prendas }) {
   const [nombreEditado, setNombreEditado] = useState("");
   const [eventoEditado, setEventoEditado] = useState("");
   const [momentoEditado, setMomentoEditado] = useState("");
-  const [ordenOutfits, setOrdenOutfits] = useState("todos");
+  const [ordenOutfits, setOrdenOutfits] = useState([]);
 
   useEffect(() => {
     cargarOutfits();
@@ -93,17 +93,19 @@ function Outfits({ usuario, prendas }) {
             <button onClick={() => setCreando(true)} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "12px" }}>
               + Crear outfit
             </button>
-            <select value={ordenOutfits} onChange={(e) => setOrdenOutfits(e.target.value)} style={{ width: "100%", padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }}>
-              <option value="todos">Todos los momentos</option>
-              <option value="Casual">Casual</option>
-              <option value="Arreglado">Arreglado</option>
-              <option value="Deportivo">Deportivo</option>
-              <option value="Noche">Noche</option>
-              <option value="Día">Día</option>
-              <option value="Playa">Playa</option>
-              <option value="Trabajo">Trabajo</option>
-              <option value="Formal">Formal</option>
-            </select>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "12px" }}>
+              {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => (
+                <span
+                  key={m}
+                  onClick={() => setOrdenOutfits(prev =>
+                    prev.includes(m) ? prev.filter(x => x !== m) : [...prev, m]
+                  )}
+                  style={{ fontSize: "12px", padding: "4px 10px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: ordenOutfits.includes(m) ? "#2c2c2a" : "white", color: ordenOutfits.includes(m) ? "white" : "#888" }}
+                >
+                  {m}
+                </span>
+              ))}
+            </div>
           </div>
 
           {outfits.length === 0 && (
@@ -112,7 +114,7 @@ function Outfits({ usuario, prendas }) {
             </div>
           )}
 
-          {outfits.filter(o => ordenOutfits === "todos" || o.momento === ordenOutfits).map(o => (
+          {outfits.filter(o => ordenOutfits.length === 0 || ordenOutfits.includes(o.momento)).map(o => (
             <div key={o.id} className="card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
