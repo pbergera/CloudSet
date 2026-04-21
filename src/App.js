@@ -30,6 +30,7 @@ function App() {
   const [filtroColorActivo, setFiltroColorActivo] = useState([]);
   const [filtroMomentoActivo, setFiltroMomentoActivo] = useState([]);
   const [filtroCategoriaActivo, setFiltroCategoriaActivo] = useState([]);
+  const [viajesList, setViajesList] = useState([]);
   
 
   useEffect(() => {
@@ -48,6 +49,7 @@ function App() {
       cargarPrendas();
       cargarPerfil();
       cargarOutfits();
+      cargarViajes();
     }
    // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [usuario]);
@@ -78,6 +80,14 @@ const cargarOutfits = async () => {
     .select("*")
     .eq("usuario_id", usuario.id);
   if (!error && data) setOutfitsList(data);
+};
+
+const cargarViajes = async () => {
+  const { data, error } = await supabase
+    .from("viajes")
+    .select("*")
+    .eq("usuario_id", usuario.id);
+  if (!error && data) setViajesList(data);
 };
 
 const guardarEstilos = async (nuevosEstilos) => {
@@ -551,7 +561,7 @@ const guardarEdicion = async () => {
       )}
 
       {seccion === "outfits" && (
-        <Outfits usuario={usuario} prendas={prendas} />
+       <Outfits usuario={usuario} prendas={prendas} viajes={viajesList} />
       )}
 
     {seccion === "viajes" && (
