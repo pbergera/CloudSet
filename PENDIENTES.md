@@ -52,11 +52,13 @@
 - en los filtros, poder filtrar también por color (es decir, dentro de "Por color", un submenú que permita escribir o seleccionar un único o varios colores).
 - si ordenamos por "momento", tener un submenú que permita elegir un momento o varios
 - tener un submenú dentro de "ordenar por categoría" que permita ver solo una categoría
+- Al crear o editar una prenda, poder poner varios colores o varios momentos
 
 ### 🔧 Pendiente
 - Editar prendas del armario desde el modal de edición de outfit
 - ordenar las prendas en el orden que habíamos previsto, mostrando tipo "PRENDAS" -> subgrupos con posibilidad de desplegable
-- Al crear o editar una prenda, poder poner varios colores o varios momentos
+- en filtro por momentos: si una prenda tiene varios momentos, me parece bien que la clasifiques en uno de ellos aleatoriamente. Pero si por ejemplo una prenda tiene "Casual" y "Día", y la clasificas en "Día", pero yo filtro "Casual", sí quiero verla. Quiero ver todas las prendas que al menos tengan esa categoría.
+- en filtro por color: si una prenda tiene varios colores, métela en una de las categorías, pero si filtro por cualquiera de los colores que la incluyen quiero que aparezca. Por ejemplo, una camisa tiene "Azul" y "Gris". La clasificas, por ejemplo, en Gris. Pero si yo filtro "Azul", quiero verla
 
 ---
 

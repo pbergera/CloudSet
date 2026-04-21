@@ -387,7 +387,10 @@ const guardarEdicion = async () => {
                     ))}
                   </div>
                   {momentosMostrados.map(momento => {
-                    const items = prendas.filter(p => (p.momento || "Sin momento") === momento);
+                    const items = prendas.filter(p => {
+                      const ms = p.momentos && p.momentos.length > 0 ? p.momentos : ["Sin momento"];
+                      return ms.includes(momento);
+                    });
                     if (items.length === 0) return null;
                     return (
                       <div key={momento} style={{ marginBottom: "16px" }}>
@@ -414,9 +417,11 @@ const guardarEdicion = async () => {
             {ordenarPor === "color" && (() => {
               const colores = {};
               prendas.forEach(p => {
-                const clave = p.color && p.color !== "sin color" ? p.color : "Sin color";
-                if (!colores[clave]) colores[clave] = [];
-                colores[clave].push(p);
+                const cs = p.colores && p.colores.length > 0 ? p.colores : ["Sin color"];
+                cs.forEach(c => {
+                  if (!colores[c]) colores[c] = [];
+                  if (!colores[c].find(x => x.id === p.id)) colores[c].push(p);
+                });
               });
               const coloresDisponibles = Object.keys(colores).sort();
               const toggleColor = (color) => {
