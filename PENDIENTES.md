@@ -89,6 +89,7 @@
 ### 🔧 Pendiente
 - Editar outfits asignados a un viaje (añadir, quitar, cambiar)
 - Organizar outfits dentro del viaje por tipo de plan
+- Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
 
 ---
 

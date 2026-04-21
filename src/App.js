@@ -27,6 +27,7 @@ function App() {
   const [ordenarPor, setOrdenarPor] = useState("categoria");
   const [momentoPrenda, setMomentoPrenda] = useState("");
   const [momentoEditado, setMomentoEditado] = useState("");
+  const [filtroColorActivo, setFiltroColorActivo] = useState("");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -357,7 +358,17 @@ const guardarEdicion = async () => {
                 if (!colores[clave]) colores[clave] = [];
                 colores[clave].push(p);
               });
-              return Object.entries(colores).map(([color, items]) => (
+              const coloresDisponibles = Object.keys(colores).sort();
+              const coloresFiltrados = filtroColorActivo
+                ? [[filtroColorActivo, colores[filtroColorActivo] || []]]
+                : Object.entries(colores);
+              return (
+                <>
+                  <select value={filtroColorActivo} onChange={(e) => setFiltroColorActivo(e.target.value)} style={{ width: "100%", marginBottom: "14px", padding: "7px 10px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "13px" }}>
+                    <option value="">Todos los colores</option>
+                    {coloresDisponibles.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                  {coloresFiltrados.map(([color, items]) => (
                 <div key={color} style={{ marginBottom: "16px" }}>
                   <div style={{ fontSize: "11px", fontWeight: "500", color: "#aaa", letterSpacing: "0.08em", marginBottom: "8px", paddingBottom: "4px", borderBottom: "1px solid #f0ede6" }}>{color}</div>
                   <div className="grid">
@@ -373,7 +384,9 @@ const guardarEdicion = async () => {
                     ))}
                   </div>
                 </div>
-              ));
+              ))}
+                </>
+              );
             })()}
                 
 
