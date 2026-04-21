@@ -76,7 +76,6 @@ function Outfits({ usuario, prendas }) {
       setCreando(false);
       setNombreOutfit("");
       setEventoOutfit("");
-      setMomentoOutfit("");
       setMomentosOutfit([]);
       setSeleccionadas([]);
     }
