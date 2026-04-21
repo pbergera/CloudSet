@@ -115,7 +115,7 @@ function Outfits({ usuario, prendas }) {
             </div>
           )}
 
-          {outfits.filter(o => ordenOutfits.length === 0 || ordenOutfits.includes(o.momento)).map(o => (
+          {outfits.filter(o => ordenOutfits.length === 0 || (o.momentos || [o.momento]).some(m => ordenOutfits.includes(m))).map(o => (
             <div key={o.id} className="card">
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
                 <div style={{ fontWeight: "500", fontSize: "14px" }}>{o.nombre}</div>
@@ -127,7 +127,9 @@ function Outfits({ usuario, prendas }) {
               </div>
               <div style={{ fontSize: "12px", color: "#888", marginBottom: "10px", display: "flex", gap: "8px" }}>
                 {o.evento && <span>{o.evento}</span>}
-                {o.momento && <span style={{ background: "#f1efe8", padding: "1px 8px", borderRadius: "10px" }}>{o.momento}</span>}
+                {(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []).map(m => (
+                  <span key={m} style={{ background: "#f1efe8", padding: "1px 8px", borderRadius: "10px", marginRight: "4px" }}>{m}</span>
+                ))}
               </div>
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
                 {prendasDeOutfit(o.prendas || []).map(p => (

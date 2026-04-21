@@ -74,11 +74,12 @@
 - Eliminar outfits
 - poder por ejemplo duplicar un outfit y luego editarlo (por ejemplo, me encanta tal outfit, y hago una versión parecida)
 - Ordenar los outftis por su categoría (Día, Noche, etc)
+- al crear un outfit, poder elegir varios momentos
 
 ### 🔧 Pendiente
 - Editar prendas dentro de un outfit ya creado (añadir, quitar, cambiar)
 - al crear nuevo Outfit, en "Evento o viaje (opcional)", poder elegir uno o varios Viajes de la pestaña Viajes.
-- en un outfit, poder elegir varios momentos
+- al editar un Outfit, poder elegir varios momentos
 
 
 ---
