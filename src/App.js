@@ -135,7 +135,7 @@ const analizarPrendaConIA = async (file) => {
       const limpio = texto.replace(/```json|```/g, "").trim();
       const resultado = JSON.parse(limpio);
       if (resultado.tipo) setTipoPrenda(resultado.tipo);
-      if (resultado.color) setColorPrenda(resultado.color);
+      if (resultado.color) setColoresPrenda([resultado.color]);
     } catch (error) {
       console.error("Error analizando con IA:", error);
     }
