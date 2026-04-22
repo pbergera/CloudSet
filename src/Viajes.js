@@ -181,15 +181,14 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     setBuscandoDestino(true);
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(texto)}&format=json&limit=5&accept-language=es&featuretype=city&addressdetails=1`);
-      setSugerenciasDestino(data
+      const resultados = await res.json();
+      setSugerenciasDestino(resultados
         .filter(r => ["city", "town", "village", "municipality", "administrative"].includes(r.type) || r.class === "place")
         .map(r => {
           const parts = [r.address?.city || r.address?.town || r.address?.village || r.name, r.address?.country].filter(Boolean);
           return { nombre: parts.join(", "), display: r.display_name };
         })
       );
-      const data = await res.json();
-      setSugerenciasDestino(data.map(r => r.display_name));
     } catch (e) {
       setSugerenciasDestino([]);
     }
