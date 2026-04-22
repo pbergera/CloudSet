@@ -57,9 +57,10 @@
 - en filtro por color: si una prenda tiene varios colores, métela en una de las categorías, pero si filtro por cualquiera de los colores que la incluyen quiero que aparezca. Por ejemplo, una camisa tiene "Azul" y "Gris". La clasificas, por ejemplo, en Gris. Pero si yo filtro "Azul", quiero verla
 - ordenar las prendas en el orden que habíamos previsto, mostrando tipo "PRENDAS" -> subgrupos con posibilidad de desplegable
 - la IA que detecta el tipo de prenda lo tiene que vincular con una de las categorías que hemos creado
+- Desde el outfit, poder editar el momento de una prenda
 
 ### 🔧 Pendiente
-- Desde el outfit, poder editar el momento de una prenda
+
 
 
 

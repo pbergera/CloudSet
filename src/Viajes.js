@@ -22,6 +22,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   const [planes, setPlanes] = useState([]);
   const [seccionesAbiertas, setSeccionesAbiertas] = useState({});
   const [planesEditados, setPlanesEditados] = useState([]);
+  const [tiempoViaje, setTiempoViaje] = useState({});
   
 
   useEffect(() => {
@@ -138,6 +139,40 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     return todos.filter((o, i, arr) => arr.findIndex(x => x.id === o.id) === i);
   };
 
+  const obtenerTiempo = async (viaje) => {
+    if (!viaje.destino || !viaje.fecha_inicio || tiempoViaje[viaje.id]) return;
+  
+    try {
+      // obtener coordenadas del destino
+      const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(viaje.destino)}&count=1&language=es`);
+      const geoData = await geoRes.json();
+      if (!geoData.results || geoData.results.length === 0) return;
+    
+      const { latitude, longitude } = geoData.results[0];
+    
+      // obtener tiempo
+      const fechaFin = viaje.fecha_fin || viaje.fecha_inicio;
+      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max,weathercode&timezone=auto&start_date=${viaje.fecha_inicio}&end_date=${fechaFin}`);
+      const weatherData = await weatherRes.json();
+    
+      if (weatherData.daily) {
+        setTiempoViaje(prev => ({ ...prev, [viaje.id]: weatherData.daily }));
+      }
+    } catch (error) {
+      console.error("Error obteniendo tiempo:", error);
+    }
+  };
+
+  const descripcionTiempo = (code) => {
+    if (code === 0) return { texto: "Despejado", icono: "☀️" };
+    if (code <= 2) return { texto: "Parcialmente nublado", icono: "⛅" };
+    if (code <= 3) return { texto: "Nublado", icono: "☁️" };
+    if (code <= 67) return { texto: "Lluvia", icono: "🌧️" };
+    if (code <= 77) return { texto: "Nieve", icono: "❄️" };
+    if (code <= 82) return { texto: "Chubascos", icono: "🌦️" };
+    return { texto: "Tormenta", icono: "⛈️" };
+  };
+
   const cargarOutfitsDeViaje = async (viajeId) => {
     const { data } = await supabase
       .from("outfit_viaje")
@@ -196,6 +231,35 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
 
               {viajeAbierto === v.id && (
                 <div style={{ marginTop: "10px" }}>
+                  {v.destino && v.fecha_inicio && (
+                    <div style={{ marginBottom: "12px" }}>
+                      {!tiempoViaje[v.id] && (
+                        <div onClick={() => obtenerTiempo(v)} style={{ fontSize: "12px", color: "#888", cursor: "pointer", padding: "6px 0", display: "flex", alignItems: "center", gap: "6px" }}>
+                          🌤️ <span style={{ textDecoration: "underline" }}>Ver tiempo en {v.destino}</span>
+                        </div>
+                      )}
+                      {tiempoViaje[v.id] && (
+                        <div style={{ marginBottom: "10px" }}>
+                          <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Tiempo en {v.destino}:</p>
+                          <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
+                            {tiempoViaje[v.id].time.map((dia, i) => {
+                              const { icono, texto } = descripcionTiempo(tiempoViaje[v.id].weathercode[i]);
+                              const fecha = new Date(dia).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" });
+                              return (
+                                <div key={dia} style={{ textAlign: "center", minWidth: "60px", background: "#f5f5f3", borderRadius: "8px", padding: "8px 4px" }}>
+                                  <div style={{ fontSize: "10px", color: "#888", marginBottom: "2px" }}>{fecha}</div>
+                                  <div style={{ fontSize: "20px" }}>{icono}</div>
+                                  <div style={{ fontSize: "11px", fontWeight: "500", color: "#2c2c2a" }}>{Math.round(tiempoViaje[v.id].temperature_2m_max[i])}°</div>
+                                  <div style={{ fontSize: "10px", color: "#aaa" }}>{Math.round(tiempoViaje[v.id].temperature_2m_min[i])}°</div>
+                                  <div style={{ fontSize: "9px", color: "#aaa" }}>{tiempoViaje[v.id].precipitation_probability_max[i]}% 💧</div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {(() => {
                     const todosOutfits = outfitsDeViaje(v);
                     const planesViaje = v.planes && v.planes.length > 0 ? v.planes.filter(p => p.cantidad > 0) : [];
