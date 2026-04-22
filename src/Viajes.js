@@ -38,6 +38,9 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   };
 
   const guardarEdicionViaje = async () => {
+   if (!nombreEditado) { setErrorViaje("El nombre del viaje es obligatorio."); return; }
+   if (!destinoEditado) { setErrorViaje("El destino es obligatorio."); return; }
+   setErrorViaje("");
    await supabase.from("viajes").update({
     nombre: nombreEditado,
     destino: destinoEditado,
@@ -198,6 +201,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
                 <input type="date" value={fechaFinEditada} min={fechaInicioEditada} onChange={(e) => setFechaFinEditada(e.target.value)} style={{ width: "100%", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
               </div>
             </div>
+            {errorViaje && <p style={{ fontSize: "13px", color: "#cc3333", marginBottom: "10px" }}>{errorViaje}</p>}
             <button onClick={guardarEdicionViaje} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
             <button onClick={() => setViajeEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
           </div>

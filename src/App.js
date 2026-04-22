@@ -31,6 +31,7 @@ function App() {
   const [filtroMomentoActivo, setFiltroMomentoActivo] = useState([]);
   const [filtroCategoriaActivo, setFiltroCategoriaActivo] = useState([]);
   const [viajesList, setViajesList] = useState([]);
+  const [errorPrenda, setErrorPrenda] = useState("");
   
 
   useEffect(() => {
@@ -155,6 +156,8 @@ const analizarPrendaConIA = async (file) => {
 
 const guardarPrenda = async () => {
   if (!prendaPrevia) return;
+  if (!tipoPrenda) { setErrorPrenda("Selecciona el tipo de prenda antes de guardar."); return; }
+  setErrorPrenda("");
   setCargando(true);
 
   const nombreArchivo = `${usuario.id}/${Date.now()}_${prendaPrevia.file.name}`;
@@ -199,6 +202,7 @@ const eliminarPrenda = async (id, foto_url) => {
 };
 
 const guardarEdicion = async () => {
+  if (!tipoEditado) { alert("El tipo de prenda es obligatorio."); return; }
   await supabase
     .from("prendas")
     .update({ tipo: tipoEditado, color: coloresEditados.length > 0 ? coloresEditados.join(", ") : "sin color", colores: coloresEditados, momento: momentosEditados.length > 0 ? momentosEditados[0] : null, momentos: momentosEditados })
@@ -309,6 +313,7 @@ const guardarEdicion = async () => {
                     ))}
                   </div>
                 </div>
+                {errorPrenda && <p style={{ fontSize: "13px", color: "#cc3333", marginBottom: "10px" }}>{errorPrenda}</p>}
                 <button onClick={guardarPrenda} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>
                   {cargando ? "Guardando..." : "Guardar prenda"}
                 </button>

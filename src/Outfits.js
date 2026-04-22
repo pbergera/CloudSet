@@ -50,6 +50,8 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
   };
 
   const guardarEdicionOutfit = async () => {
+   if (!nombreEditado) { setErrorOutfit("El nombre del outfit es obligatorio."); return; }
+   setErrorOutfit("");
    await supabase.from("outfits").update({
     nombre: nombreEditado,
     evento: eventoEditado || null,
@@ -239,6 +241,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
                 </div>
               </div>
             )}
+            {errorOutfit && <p style={{ fontSize: "13px", color: "#cc3333", marginBottom: "10px" }}>{errorOutfit}</p>}
             <button onClick={guardarEdicionOutfit} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
             <button onClick={() => setOutfitEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
           </div>
