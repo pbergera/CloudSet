@@ -18,6 +18,8 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   const [errorViaje, setErrorViaje] = useState("");
   const [viajeEditandoOutfits, setViajeEditandoOutfits] = useState(null);
   const [outfitsDelViaje, setOutfitsDelViaje] = useState([]);
+  const [planes, setPlanes] = useState([]);
+  const [planesEditados, setPlanesEditados] = useState([]);
 
   useEffect(() => {
     cargarViajes();
@@ -60,6 +62,19 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     );
   };
 
+  const togglePlan = (momento, cantidad, esEdicion = false) => {
+    const setter = esEdicion ? setPlanesEditados : setPlanes;
+    setter(prev => {
+      const existe = prev.find(p => p.momento === momento);
+      if (existe) {
+        if (cantidad === 0) return prev.filter(p => p.momento !== momento);
+        return prev.map(p => p.momento === momento ? { ...p, cantidad } : p);
+      }
+      return [...prev, { momento, cantidad }];
+    });
+  };
+
+
   const guardarViaje = async () => {
     if (!nombre) { setErrorViaje("El nombre es obligatorio."); return; }
     setErrorViaje("");
@@ -70,6 +85,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
       fecha_inicio: fechaInicio || null,
       fecha_fin: fechaFin || null,
       outfits: outfitsSeleccionados
+      planes: planes
     });
     if (!error) {
       const { data: nuevoViaje } = await supabase
@@ -90,6 +106,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
       setDestino("");
       setFechaInicio("");
       setFechaFin("");
+      setPlanes([]);
       setOutfitsSeleccionados([]);
     }
   };
@@ -270,6 +287,23 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
                 style={{ width: "100%", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
               />
             </div>
+          </div>
+
+          <div style={{ marginBottom: "14px" }}>
+            <p style={{ fontSize: "13px", color: "#888", marginBottom: "8px" }}>Planifica tus conjuntos:</p>
+            {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => {
+              const plan = planes.find(p => p.momento === m);
+              return (
+                <div key={m} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+                  <span style={{ fontSize: "13px", flex: 1 }}>{m}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div onClick={() => togglePlan(m, (plan?.cantidad || 0) - 1)} style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #e0ddd6", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "16px", color: "#888" }}>−</div>
+                    <span style={{ fontSize: "14px", fontWeight: "500", minWidth: "20px", textAlign: "center" }}>{plan?.cantidad || 0}</span>
+                    <div onClick={() => togglePlan(m, (plan?.cantidad || 0) + 1)} style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #e0ddd6", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "16px", color: "#888" }}>+</div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
           {outfits.length > 0 && (

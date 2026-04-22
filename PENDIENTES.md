@@ -85,6 +85,7 @@
 - Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
 - En general, si estoy creando o editando algo y me falta rellenar un campo obligatorio o lo estoy rellenando mal, que me avise. Ahora mismo lo que hace es que no te deja guardar pero no sabes por qué.
 - si tengo un outfit que solo tiene una prenda, y borro esa prenda, no se borra el outfit. Ver cómo lo gestionamos, no tiene sentido un outfit vacío. Quizá que avise: este outfit se ha quedado sin prenda principal, quieres borrarlo?
+- al crear un Outfit, que me proponga los estilos basados en los estilos de las prendas que lo componen
 
 ### 🔧 Pendiente
 
@@ -103,12 +104,12 @@
 - Valorar que no sea obligatorio el lugar en un viaje
 - Cambiar nombre a "viaje o evento"
 - Cuando borro un Viaje, tarda un poco en desaparecer en el seleccionable de los outfits.
+- Editar outfits asignados a un viaje (añadir, quitar, cambiar)
 
 ### 🔧 Pendiente
-- Editar outfits asignados a un viaje (añadir, quitar, cambiar)
 - Organizar outfits dentro del viaje por tipo de plan
 - Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
-- al crear un Outfit, que me proponga los estilos basados en los estilos de las prendas que lo componen
+
 
 ---
 
