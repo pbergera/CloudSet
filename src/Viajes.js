@@ -63,7 +63,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   };
 
   const togglePlan = (momento, cantidad, esEdicion = false) => {
-    const setter = esEdicion ? setPlanesEditados : setPlanes;
+    const setter = setPlanes;
     setter(prev => {
       const existe = prev.find(p => p.momento === momento);
       if (existe) {
