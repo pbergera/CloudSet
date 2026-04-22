@@ -19,7 +19,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   const [viajeEditandoOutfits, setViajeEditandoOutfits] = useState(null);
   const [outfitsDelViaje, setOutfitsDelViaje] = useState([]);
   const [planes, setPlanes] = useState([]);
-  const [planesEditados, setPlanesEditados] = useState([]);
+  
 
   useEffect(() => {
     cargarViajes();
