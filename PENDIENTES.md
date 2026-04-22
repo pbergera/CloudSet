@@ -108,10 +108,11 @@
 - Organizar outfits dentro del viaje por tipo de plan
 - Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
 - Edición de viajes: poder editar los planes
-
-### 🔧 Pendiente
 - en Mi Maleta, que las prendas se vean con las categorías en el orden que habíamos hecho al principio, con los dos grupos (prendas y accesorios) y los subgrupos y tal.
 - Edición de viajes: me dice que el destino es obligatorio
+
+### 🔧 Pendiente
+
 
 ---
 

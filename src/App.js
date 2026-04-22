@@ -7,6 +7,7 @@ import Outfits from "./Outfits";
 import Viajes from "./Viajes";
 import SelectorCategoria from "./SelectorCategoria";
 import { CATEGORIAS } from "./categorias";
+import { TODAS_CATEGORIAS } from "./categorias";
 
 function App() {
   const [seccion, setSeccion] = useState("armario");
@@ -130,7 +131,7 @@ const analizarPrendaConIA = async (file) => {
           body: JSON.stringify({
             contents: [{
               parts: [
-                { text: "Analiza esta prenda de ropa. Responde SOLO en formato JSON con estos campos: tipo (uno de: camiseta, camisa, pantalon, vestido, falda, chaqueta, abrigo, zapatos, zapatillas, accesorio, otro), color (color principal en español, una palabra). Ejemplo: {\"tipo\":\"camiseta\",\"color\":\"azul\"}" },
+                { text: `Analiza esta prenda de ropa. Responde SOLO en formato JSON con estos campos: tipo (DEBE ser exactamente uno de estos valores: ${TODAS_CATEGORIAS.join(", ")}), color (color principal en español, una palabra). Ejemplo: {"tipo":"CAMISETAS","color":"azul"}` },
                 { inline_data: { mime_type: file.type, data: base64 } }
               ]
             }]
