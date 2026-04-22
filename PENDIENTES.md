@@ -56,10 +56,11 @@
 - en filtro por momentos: si una prenda tiene varios momentos, me parece bien que la clasifiques en uno de ellos aleatoriamente. Pero si por ejemplo una prenda tiene "Casual" y "Día", y la clasificas en "Día", pero yo filtro "Casual", sí quiero verla. Quiero ver todas las prendas que al menos tengan esa categoría.
 - en filtro por color: si una prenda tiene varios colores, métela en una de las categorías, pero si filtro por cualquiera de los colores que la incluyen quiero que aparezca. Por ejemplo, una camisa tiene "Azul" y "Gris". La clasificas, por ejemplo, en Gris. Pero si yo filtro "Azul", quiero verla
 - ordenar las prendas en el orden que habíamos previsto, mostrando tipo "PRENDAS" -> subgrupos con posibilidad de desplegable
+- la IA que detecta el tipo de prenda lo tiene que vincular con una de las categorías que hemos creado
 
 ### 🔧 Pendiente
 - Editar prendas del armario desde el modal de edición de outfit
-- la IA que detecta el tipo de prenda lo tiene que vincular con una de las categorías que hemos creado
+
 
 
 
@@ -85,10 +86,10 @@
 - Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
 - En general, si estoy creando o editando algo y me falta rellenar un campo obligatorio o lo estoy rellenando mal, que me avise. Ahora mismo lo que hace es que no te deja guardar pero no sabes por qué.
 - si tengo un outfit que solo tiene una prenda, y borro esa prenda, no se borra el outfit. Ver cómo lo gestionamos, no tiene sentido un outfit vacío. Quizá que avise: este outfit se ha quedado sin prenda principal, quieres borrarlo?
-- al crear un Outfit, que me proponga los estilos basados en los estilos de las prendas que lo componen
+
 
 ### 🔧 Pendiente
-
+- al crear un Outfit, que me proponga los estilos basados en los estilos de las prendas que lo componen
 
 ---
 

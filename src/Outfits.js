@@ -74,9 +74,24 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
   };
 
   const togglePrenda = (id) => {
-    setSeleccionadas(prev =>
-      prev.includes(id) ? prev.filter(p => p !== id) : [...prev, id]
-    );
+    const nuevasSeleccionadas = seleccionadas.includes(id)
+      ? seleccionadas.filter(p => p !== id)
+      : [...seleccionadas, id];
+    setSeleccionadas(nuevasSeleccionadas);
+
+    // sugerir momentos basados en las prendas seleccionadas
+    const momentosContados = {};
+    nuevasSeleccionadas.forEach(pId => {
+      const prenda = prendas.find(p => p.id === pId);
+      if (prenda) {
+        const ms = prenda.momentos && prenda.momentos.length > 0 ? prenda.momentos : prenda.momento ? [prenda.momento] : [];
+        ms.forEach(m => { momentosContados[m] = (momentosContados[m] || 0) + 1; });
+      }
+    });
+    const sugeridos = Object.entries(momentosContados)
+      .sort((a, b) => b[1] - a[1])
+      .map(([m]) => m);
+    setMomentosOutfit(sugeridos);
   };
 
   
