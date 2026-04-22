@@ -185,6 +185,25 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
 
               {viajeAbierto === v.id && (
                 <div style={{ marginTop: "10px" }}>
+                  {v.planes && v.planes.length > 0 && (
+                    <div style={{ marginBottom: "12px" }}>
+                      <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Planes:</p>
+                      {v.planes.filter(p => p.cantidad > 0).map(p => {
+                        const outfitsCubiertos = outfitsDeViaje(v).filter(o =>
+                          (o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []).includes(p.momento)
+                        ).length;
+                        const cubierto = outfitsCubiertos >= p.cantidad;
+                        return (
+                          <div key={p.momento} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                            <span style={{ fontSize: "13px", flex: 1 }}>{p.momento}</span>
+                            <span style={{ fontSize: "12px", color: cubierto ? "#2c2c2a" : "#cc3333", background: cubierto ? "#f1efe8" : "#fff0f0", padding: "2px 8px", borderRadius: "10px" }}>
+                              {outfitsCubiertos}/{p.cantidad}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                   <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Outfits asignados:</p>
                   {outfitsDeViaje(v).length === 0 ? (
                     <p style={{ fontSize: "12px", color: "#aaa" }}>Sin outfits asignados</p>
