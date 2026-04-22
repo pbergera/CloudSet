@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
-function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
+function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViajes }) {
   const [viajes, setViajes] = useState([]);
   const [creando, setCreando] = useState(false);
   const [nombre, setNombre] = useState("");
@@ -33,8 +33,9 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   };
 
   const eliminarViaje = async (id) => {
-   await supabase.from("viajes").delete().eq("id", id);
-   await cargarViajes();
+    await supabase.from("viajes").delete().eq("id", id);
+    await cargarViajes();
+    if (onRefrescarViajes) onRefrescarViajes();
   };
 
   const guardarEdicionViaje = async () => {

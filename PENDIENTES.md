@@ -100,13 +100,13 @@
 - Editar nombre, destino y fechas de un viaje
 - Eliminar viajes
 - Outfits se refrescan automáticamente al entrar en viajes
+- Valorar que no sea obligatorio el lugar en un viaje
+- Cambiar nombre a "viaje o evento"
 
 ### 🔧 Pendiente
 - Editar outfits asignados a un viaje (añadir, quitar, cambiar)
 - Organizar outfits dentro del viaje por tipo de plan
 - Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
-- Valorar que no sea obligatorio el lugar en un viaje
-- Cambiar nombre a "viaje o evento"
 - Cuando borro un Viaje, tarda un poco en desaparecer en el seleccionable de los outfits.
 ---
 

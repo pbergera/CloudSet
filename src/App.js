@@ -591,8 +591,8 @@ const guardarEdicion = async () => {
       )}
 
     {seccion === "viajes" && (
-        <Viajes usuario={usuario} outfits={outfitsList} prendas={prendas} onRefrescarOutfits={cargarOutfits} />
-      )}
+      <Viajes usuario={usuario} outfits={outfitsList} prendas={prendas} onRefrescarOutfits={cargarOutfits} onRefrescarViajes={cargarViajes} />
+    )}
 
     {seccion === "cuenta" && (
      <Perfil usuario={usuario} onCerrarSesion={cerrarSesion} onEstilosActualizados={(url) => { setFotoPerfil(url); cargarPerfil(); }} />
