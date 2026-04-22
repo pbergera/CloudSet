@@ -255,15 +255,19 @@ const guardarEdicion = async () => {
       </div>
 
       <div className="nav">
-      {["armario", "outfits", "viajes"].map((s) => (
-          <button
-            key={s}
-            className={`nav-btn ${seccion === s ? "active" : ""}`}
-            onClick={() => setSeccion(s)}
-          >
-            {s.charAt(0).toUpperCase() + s.slice(1)}
-          </button>
-        ))}
+      {[
+        { id: "armario", label: "Armario" },
+        { id: "outfits", label: "Outfits" },
+        { id: "viajes", label: "Viajes y eventos" }
+      ].map((s) => (
+        <button
+         key={s.id}
+         className={`nav-btn ${seccion === s.id ? "active" : ""}`}
+         onClick={() => setSeccion(s.id)}
+        >
+         {s.label}
+        </button>
+      ))}
       </div>
 
       {seccion === "perfil" && (
