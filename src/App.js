@@ -198,6 +198,23 @@ const eliminarPrenda = async (id, foto_url) => {
   const nombreArchivo = foto_url.split("/prendas/")[1];
   await supabase.storage.from("prendas").remove([nombreArchivo]);
   await supabase.from("prendas").delete().eq("id", id);
+  
+  // comprobar outfits que se quedan vacíos
+  const outfitsAfectados = outfitsList.filter(o => 
+    o.prendas && o.prendas.includes(id) && o.prendas.length === 1
+  );
+  
+  if (outfitsAfectados.length > 0) {
+    const nombres = outfitsAfectados.map(o => o.nombre).join(", ");
+    const confirmar = window.confirm(`Los siguientes outfits se han quedado sin prendas: ${nombres}. ¿Quieres borrarlos?`);
+    if (confirmar) {
+      for (const o of outfitsAfectados) {
+        await supabase.from("outfits").delete().eq("id", o.id);
+      }
+      await cargarOutfits();
+    }
+  }
+  
   await cargarPrendas();
 };
 
