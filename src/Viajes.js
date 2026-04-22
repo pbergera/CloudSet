@@ -19,6 +19,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   const [viajeEditandoOutfits, setViajeEditandoOutfits] = useState(null);
   const [outfitsDelViaje, setOutfitsDelViaje] = useState([]);
   const [planes, setPlanes] = useState([]);
+  const [seccionesAbiertas, setSeccionesAbiertas] = useState({});
   
 
   useEffect(() => {
@@ -72,6 +73,13 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
       }
       return [...prev, { momento, cantidad }];
     });
+  };
+
+  const toggleSeccion = (viajeId, seccion) => {
+    setSeccionesAbiertas(prev => ({
+      ...prev,
+      [`${viajeId}-${seccion}`]: !prev[`${viajeId}-${seccion}`]
+    }));
   };
 
 
@@ -185,63 +193,103 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
 
               {viajeAbierto === v.id && (
                 <div style={{ marginTop: "10px" }}>
-                  {v.planes && v.planes.length > 0 && (
-                    <div style={{ marginBottom: "12px" }}>
-                      <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Planes:</p>
-                      {v.planes.filter(p => p.cantidad > 0).map(p => {
-                        const outfitsCubiertos = outfitsDeViaje(v).filter(o =>
-                          (o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []).includes(p.momento)
-                        ).length;
-                        const cubierto = outfitsCubiertos >= p.cantidad;
-                        return (
-                          <div key={p.momento} style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                            <span style={{ fontSize: "13px", flex: 1 }}>{p.momento}</span>
-                            <span style={{ fontSize: "12px", color: cubierto ? "#2c2c2a" : "#cc3333", background: cubierto ? "#f1efe8" : "#fff0f0", padding: "2px 8px", borderRadius: "10px" }}>
-                              {outfitsCubiertos}/{p.cantidad}
-                            </span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                  <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Outfits asignados:</p>
-                  {outfitsDeViaje(v).length === 0 ? (
-                    <p style={{ fontSize: "12px", color: "#aaa" }}>Sin outfits asignados</p>
-                  ) : (
-                    <>
-                      {outfitsDeViaje(v).map(o => (
-                        <div key={o.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
-                          <div style={{ display: "flex", gap: "3px" }}>
-                            {(o.prendas || []).slice(0, 3).map(id => {
-                              const prenda = prendas.find(p => p.id === id);
-                              return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
-                            })}
-                          </div>
-                          <div>
-                            <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
-                            {o.evento && <div style={{ color: "#aaa", fontSize: "11px" }}>{o.evento}</div>}
-                            {o.momento && <div style={{ color: "#aaa", fontSize: "11px" }}>{o.momento}</div>}
-                          </div>
-                        </div>
-                      ))}
-                      <div style={{ marginTop: "12px" }}>
-                        <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Mi maleta:</p>
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                          {[...new Set(outfitsDeViaje(v).flatMap(o => o.prendas || []))].map(id => {
-                            const prenda = prendas.find(p => p.id === id);
-                            return prenda ? (
-                              <div key={id} style={{ textAlign: "center" }}>
-                                <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
-                                <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                  {(() => {
+                    const todosOutfits = outfitsDeViaje(v);
+                    const planesViaje = v.planes && v.planes.length > 0 ? v.planes.filter(p => p.cantidad > 0) : [];
+                    const momentosConPlan = planesViaje.map(p => p.momento);
+
+                    return (
+                      <>
+                        {planesViaje.map(p => {
+                          const outfitsPlan = todosOutfits.filter(o =>
+                            (o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []).includes(p.momento)
+                          );
+                          const cubierto = outfitsPlan.length >= p.cantidad;
+                          const abierto = seccionesAbiertas[`${v.id}-${p.momento}`];
+                          return (
+                            <div key={p.momento} style={{ marginBottom: "8px" }}>
+                              <div onClick={() => toggleSeccion(v.id, p.momento)} style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
+                                <span style={{ fontSize: "13px", flex: 1, fontWeight: "500" }}>{p.momento}</span>
+                                <span style={{ fontSize: "12px", color: cubierto ? "#2c2c2a" : "#cc3333", background: cubierto ? "#f1efe8" : "#fff0f0", padding: "2px 8px", borderRadius: "10px" }}>
+                                  {outfitsPlan.length}/{p.cantidad}
+                                </span>
+                                <span style={{ fontSize: "10px", color: "#aaa" }}>{abierto ? "▲" : "▼"}</span>
                               </div>
-                            ) : null;
-                          })}
+                              {abierto && (
+                                <div style={{ paddingTop: "6px" }}>
+                                  {outfitsPlan.length === 0 ? (
+                                    <p style={{ fontSize: "12px", color: "#aaa", padding: "4px 0" }}>Sin outfits asignados</p>
+                                  ) : outfitsPlan.map(o => (
+                                    <div key={o.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
+                                      <div style={{ display: "flex", gap: "3px" }}>
+                                        {(o.prendas || []).slice(0, 3).map(id => {
+                                          const prenda = prendas.find(p => p.id === id);
+                                          return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
+                                        })}
+                                      </div>
+                                      <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
+
+                        {todosOutfits.filter(o =>
+                          !(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []).some(m => momentosConPlan.includes(m))
+                        ).length > 0 && (
+                          <div style={{ marginBottom: "8px" }}>
+                            <div onClick={() => toggleSeccion(v.id, "otros")} style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
+                              <span style={{ fontSize: "13px", flex: 1, fontWeight: "500" }}>Otros</span>
+                              <span style={{ fontSize: "10px", color: "#aaa" }}>{seccionesAbiertas[`${v.id}-otros`] ? "▲" : "▼"}</span>
+                            </div>
+                            {seccionesAbiertas[`${v.id}-otros`] && (
+                              <div style={{ paddingTop: "6px" }}>
+                                {todosOutfits.filter(o =>
+                                  !(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []).some(m => momentosConPlan.includes(m))
+                                ).map(o => (
+                                  <div key={o.id} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
+                                    <div style={{ display: "flex", gap: "3px" }}>
+                                      {(o.prendas || []).slice(0, 3).map(id => {
+                                        const prenda = prendas.find(p => p.id === id);
+                                        return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "36px", height: "36px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
+                                      })}
+                                    </div>
+                                    <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div style={{ marginBottom: "8px" }}>
+                          <div onClick={() => toggleSeccion(v.id, "maleta")} style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", padding: "6px 0", borderBottom: "1px solid #f0ede6" }}>
+                            <span style={{ fontSize: "13px", flex: 1, fontWeight: "500" }}>Mi maleta</span>
+                            <span style={{ fontSize: "10px", color: "#aaa" }}>{seccionesAbiertas[`${v.id}-maleta`] ? "▲" : "▼"}</span>
+                          </div>
+                          {seccionesAbiertas[`${v.id}-maleta`] && (
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingTop: "8px" }}>
+                              {[...new Set(todosOutfits.flatMap(o => o.prendas || []))].map(id => {
+                                const prenda = prendas.find(p => p.id === id);
+                                return prenda ? (
+                                  <div key={id} style={{ textAlign: "center" }}>
+                                    <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
+                                    <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                                  </div>
+                                ) : null;
+                              })}
+                            </div>
+                          )}
                         </div>
-                      </div>
-                    </>
-                  )}
+                      </>
+                    );
+                  })()}
                 </div>
               )}
+
+
           </div>
           ))}
 
