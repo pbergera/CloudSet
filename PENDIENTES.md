@@ -102,12 +102,14 @@
 - Outfits se refrescan automáticamente al entrar en viajes
 - Valorar que no sea obligatorio el lugar en un viaje
 - Cambiar nombre a "viaje o evento"
+- Cuando borro un Viaje, tarda un poco en desaparecer en el seleccionable de los outfits.
 
 ### 🔧 Pendiente
 - Editar outfits asignados a un viaje (añadir, quitar, cambiar)
 - Organizar outfits dentro del viaje por tipo de plan
 - Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
-- Cuando borro un Viaje, tarda un poco en desaparecer en el seleccionable de los outfits.
+- al crear un Outfit, que me proponga los estilos basados en los estilos de las prendas que lo componen
+
 ---
 
 ## 👤 PERFIL & CUENTA

@@ -16,6 +16,8 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   const [fechaInicioEditada, setFechaInicioEditada] = useState("");
   const [fechaFinEditada, setFechaFinEditada] = useState("");
   const [errorViaje, setErrorViaje] = useState("");
+  const [viajeEditandoOutfits, setViajeEditandoOutfits] = useState(null);
+  const [outfitsDelViaje, setOutfitsDelViaje] = useState([]);
 
   useEffect(() => {
     cargarViajes();
@@ -108,6 +110,27 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     return todos.filter((o, i, arr) => arr.findIndex(x => x.id === o.id) === i);
   };
 
+  const cargarOutfitsDeViaje = async (viajeId) => {
+    const { data } = await supabase
+      .from("outfit_viaje")
+      .select("outfit_id")
+      .eq("viaje_id", viajeId);
+    setOutfitsDelViaje(data ? data.map(r => r.outfit_id) : []);
+  };
+
+  const guardarOutfitsDeViaje = async () => {
+    await supabase.from("outfit_viaje").delete().eq("viaje_id", viajeEditandoOutfits);
+    if (outfitsDelViaje.length > 0) {
+      await supabase.from("outfit_viaje").insert(
+        outfitsDelViaje.map(o => ({ outfit_id: o, viaje_id: viajeEditandoOutfits }))
+      );
+    }
+    await cargarViajes();
+    if (onRefrescarOutfits) onRefrescarOutfits();
+    setViajeEditandoOutfits(null);
+  };
+
+
   return (
     <div className="seccion">
       {!creando ? (
@@ -132,6 +155,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
              <div style={{ fontWeight: "500", fontSize: "14px", cursor: "pointer" }} onClick={() => setViajeAbierto(viajeAbierto === v.id ? null : v.id)}>{v.nombre}</div>
              <div style={{ display: "flex", gap: "10px" }}>
                   <div onClick={() => { setViajeEditando(v); setNombreEditado(v.nombre); setDestinoEditado(v.destino); setFechaInicioEditada(v.fecha_inicio || ""); setFechaFinEditada(v.fecha_fin || ""); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={async () => { setViajeEditandoOutfits(v.id); await cargarOutfitsDeViaje(v.id); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Outfits</div>
                   <div onClick={() => eliminarViaje(v.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
                 </div>
             </div>
@@ -283,6 +307,38 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
           </button>
         </div>
       )}
+    
+      {viajeEditandoOutfits && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
+          <div style={{ background: "white", borderRadius: "12px", padding: "1.25rem", width: "300px", maxHeight: "80vh", overflowY: "auto" }}>
+            <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Outfits del viaje</h2>
+            <p style={{ fontSize: "12px", color: "#888", marginBottom: "8px" }}>Selecciona los outfits para este viaje:</p>
+            {outfits.map(o => (
+              <div key={o.id}
+                onClick={() => setOutfitsDelViaje(prev => prev.includes(o.id) ? prev.filter(x => x !== o.id) : [...prev, o.id])}
+                style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px", marginBottom: "6px", border: outfitsDelViaje.includes(o.id) ? "1.5px solid #2c2c2a" : "1px solid #e0ddd6", borderRadius: "8px", cursor: "pointer" }}
+              >
+                <div style={{ width: "12px", height: "12px", borderRadius: "50%", background: outfitsDelViaje.includes(o.id) ? "#2c2c2a" : "white", border: "1px solid #2c2c2a", flexShrink: 0 }} />
+                <div style={{ display: "flex", gap: "4px", marginRight: "6px" }}>
+                  {(o.prendas || []).slice(0, 3).map(id => {
+                    const prenda = prendas.find(p => p.id === id);
+                    return prenda ? <img key={id} src={prenda.foto_url} alt={prenda.tipo} style={{ width: "32px", height: "32px", objectFit: "cover", borderRadius: "4px", border: "1px solid #e0ddd6" }} /> : null;
+                  })}
+                </div>
+                <div>
+                  <div style={{ fontSize: "13px", fontWeight: "500" }}>{o.nombre}</div>
+                  {(o.momentos && o.momentos.length > 0 ? o.momentos : o.momento ? [o.momento] : []).map(m => (
+                    <span key={m} style={{ fontSize: "11px", color: "#aaa", marginRight: "4px" }}>{m}</span>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <button onClick={guardarOutfitsDeViaje} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px", marginTop: "8px" }}>Guardar</button>
+            <button onClick={() => setViajeEditandoOutfits(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
+          </div>
+        </div>
+      )}
+    
     </div>
   );
 }
