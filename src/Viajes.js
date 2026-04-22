@@ -180,7 +180,15 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     if (texto.length < 3) { setSugerenciasDestino([]); return; }
     setBuscandoDestino(true);
     try {
-      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(texto)}&format=json&limit=5&accept-language=es`);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(texto)}&format=json&limit=5&accept-language=es&featuretype=city&addressdetails=1`);
+      const data = await res.json();
+      setSugerenciasDestino(data
+        .filter(r => ["city", "town", "village", "municipality", "administrative"].includes(r.type) || r.class === "place")
+        .map(r => {
+          const parts = [r.address?.city || r.address?.town || r.address?.village || r.name, r.address?.country].filter(Boolean);
+          return { nombre: parts.join(", "), display: r.display_name };
+        })
+      );
       const data = await res.json();
       setSugerenciasDestino(data.map(r => r.display_name));
     } catch (e) {
@@ -463,7 +471,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
             onChange={(e) => setNombre(e.target.value)}
             style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
           />
-          
+
           <div style={{ position: "relative", marginBottom: "10px" }}>
             <input
               type="text"
@@ -476,11 +484,12 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
             {sugerenciasDestino.length > 0 && (
               <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "white", border: "1px solid #e0ddd6", borderRadius: "8px", zIndex: 200, maxHeight: "200px", overflowY: "auto", marginTop: "2px" }}>
                 {sugerenciasDestino.map((s, i) => (
-                  <div key={i} onClick={() => { setDestino(s); setSugerenciasDestino([]); }}
+                  <div key={i} onClick={() => { setDestino(s.nombre); setSugerenciasDestino([]); }}
                     style={{ padding: "8px 12px", fontSize: "13px", cursor: "pointer", borderBottom: "1px solid #f0ede6" }}
                     onMouseEnter={e => e.currentTarget.style.background = "#f5f5f3"}
                     onMouseLeave={e => e.currentTarget.style.background = "white"}>
-                    {s}
+                    <div style={{ fontWeight: "500" }}>{s.nombre}</div>
+                    <div style={{ fontSize: "11px", color: "#aaa" }}>{s.display}</div>
                   </div>
                 ))}
               </div>
