@@ -285,15 +285,36 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
                                 if (prendasGrupo.length === 0) return null;
                                 return (
                                   <div key={grupo.grupo} style={{ marginBottom: "12px" }}>
-                                    <div style={{ fontSize: "11px", fontWeight: "600", color: "#2c2c2a", letterSpacing: "0.06em", marginBottom: "6px", paddingBottom: "4px", borderBottom: "1px solid #e0ddd6" }}>{grupo.grupo}</div>
-                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                                      {prendasGrupo.map(prenda => (
-                                        <div key={prenda.id} style={{ textAlign: "center" }}>
-                                          <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
-                                          <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                                    <div style={{ fontSize: "11px", fontWeight: "600", color: "#2c2c2a", letterSpacing: "0.06em", marginBottom: "6px", paddingBottom: "4px", borderBottom: "2px solid #2c2c2a" }}>{grupo.grupo}</div>
+                                    {grupo.opciones ? (
+                                      <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                        {prendasGrupo.map(prenda => (
+                                          <div key={prenda.id} style={{ textAlign: "center" }}>
+                                            <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
+                                            <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    ) : grupo.subgrupos.map(s => {
+                                      const opcionesS = s.opciones ? s.opciones : [s.subgrupo];
+                                      const prendasS = [...new Set(todosOutfits.flatMap(o => o.prendas || []))]
+                                        .map(id => prendas.find(p => p.id === id))
+                                        .filter(p => p && opcionesS.includes(p.tipo));
+                                      if (prendasS.length === 0) return null;
+                                      return (
+                                        <div key={s.subgrupo} style={{ marginBottom: "8px" }}>
+                                          <div style={{ fontSize: "11px", fontWeight: "500", color: "#555", marginBottom: "4px", paddingBottom: "2px", borderBottom: "1px solid #e0ddd6" }}>{s.subgrupo}</div>
+                                          <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                            {prendasS.map(prenda => (
+                                              <div key={prenda.id} style={{ textAlign: "center" }}>
+                                                <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
+                                                <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                                              </div>
+                                            ))}
+                                          </div>
                                         </div>
-                                      ))}
-                                    </div>
+                                      );
+                                    })}
                                   </div>
                                 );
                               })}
