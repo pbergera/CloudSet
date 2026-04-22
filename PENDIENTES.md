@@ -59,7 +59,7 @@
 - la IA que detecta el tipo de prenda lo tiene que vincular con una de las categorías que hemos creado
 
 ### 🔧 Pendiente
-- Editar prendas del armario desde el modal de edición de outfit
+- Desde el outfit, poder editar el momento de una prenda
 
 
 
@@ -86,10 +86,11 @@
 - Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
 - En general, si estoy creando o editando algo y me falta rellenar un campo obligatorio o lo estoy rellenando mal, que me avise. Ahora mismo lo que hace es que no te deja guardar pero no sabes por qué.
 - si tengo un outfit que solo tiene una prenda, y borro esa prenda, no se borra el outfit. Ver cómo lo gestionamos, no tiene sentido un outfit vacío. Quizá que avise: este outfit se ha quedado sin prenda principal, quieres borrarlo?
+- al crear un Outfit, que me proponga los estilos basados en los estilos de las prendas que lo componen
 
 
 ### 🔧 Pendiente
-- al crear un Outfit, que me proponga los estilos basados en los estilos de las prendas que lo componen
+
 
 ---
 

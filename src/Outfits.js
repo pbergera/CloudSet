@@ -18,6 +18,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
   const [viajesEditados, setViajesEditados] = useState([]);
   const [prendasEditadas, setPrendasEditadas] = useState([]);
   const [errorOutfit, setErrorOutfit] = useState("");
+  const [prendaEditandoMomento, setPrendaEditandoMomento] = useState(null);
 
   useEffect(() => {
     cargarOutfits();
@@ -223,16 +224,50 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
                 {prendasEditadas.map(id => {
                   const p = prendas.find(x => x.id === id);
                   return p ? (
-                    <div key={id} style={{ position: "relative" }}>
+                    <div key={id} style={{ position: "relative", textAlign: "center" }}>
                       <img src={p.foto_url} alt={p.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6" }} />
                       <div onClick={() => setPrendasEditadas(prev => prev.filter(x => x !== id))}
                         style={{ position: "absolute", top: "-4px", right: "-4px", width: "16px", height: "16px", borderRadius: "50%", background: "#cc3333", color: "white", fontSize: "10px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
                         ×
                       </div>
+                      <div onClick={() => setPrendaEditandoMomento(p)}
+                        style={{ fontSize: "9px", color: "#888", cursor: "pointer", marginTop: "2px" }}>
+                        ✎ momento
+                      </div>
                     </div>
                   ) : null;
                 })}
               </div>
+              {prendaEditandoMomento && (
+                <div style={{ background: "#f5f5f3", borderRadius: "8px", padding: "10px", marginBottom: "10px" }}>
+                  <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Momentos de {prendaEditandoMomento.tipo}:</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "8px" }}>
+                    {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => {
+                      const activo = (prendaEditandoMomento.momentos || []).includes(m);
+                      return (
+                        <span key={m} onClick={() => {
+                          const nuevos = activo
+                            ? (prendaEditandoMomento.momentos || []).filter(x => x !== m)
+                            : [...(prendaEditandoMomento.momentos || []), m];
+                          setPrendaEditandoMomento({ ...prendaEditandoMomento, momentos: nuevos });
+                        }}
+                          style={{ fontSize: "11px", padding: "3px 8px", borderRadius: "20px", border: "1px solid #e0ddd6", cursor: "pointer", background: activo ? "#2c2c2a" : "white", color: activo ? "white" : "#888" }}>
+                          {m}
+                        </span>
+                      );
+                    })}
+                  </div>
+                  <button onClick={async () => {
+                    await supabase.from("prendas").update({ momentos: prendaEditandoMomento.momentos, momento: prendaEditandoMomento.momentos?.[0] || null }).eq("id", prendaEditandoMomento.id);
+                    setPrendaEditandoMomento(null);
+                  }} style={{ fontSize: "12px", padding: "5px 12px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}>
+                    Guardar
+                  </button>
+                  <button onClick={() => setPrendaEditandoMomento(null)} style={{ fontSize: "12px", padding: "5px 12px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "6px", cursor: "pointer", marginLeft: "6px" }}>
+                    Cancelar
+                  </button>
+                </div>
+              )}
               <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Añadir prendas:</p>
               <div className="grid">
                 {prendas.filter(p => !prendasEditadas.includes(p.id)).map(p => (
