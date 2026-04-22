@@ -181,7 +181,6 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     setBuscandoDestino(true);
     try {
       const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(texto)}&format=json&limit=5&accept-language=es&featuretype=city&addressdetails=1`);
-      const data = await res.json();
       setSugerenciasDestino(data
         .filter(r => ["city", "town", "village", "municipality", "administrative"].includes(r.type) || r.class === "place")
         .map(r => {
