@@ -84,7 +84,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
       destino,
       fecha_inicio: fechaInicio || null,
       fecha_fin: fechaFin || null,
-      outfits: outfitsSeleccionados
+      outfits: outfitsSeleccionados,
       planes: planes
     });
     if (!error) {
