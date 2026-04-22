@@ -148,7 +148,12 @@ const analizarPrendaConIA = async (file) => {
       const limpio = texto.replace(/```json|```/g, "").trim();
       const resultado = JSON.parse(limpio);
       if (resultado.tipo) setTipoPrenda(resultado.tipo);
-      if (resultado.color) setColoresPrenda([resultado.color]);
+      if (resultado.color) {
+        const coloresDisponibles = ["Negro", "Blanco", "Gris", "Beige", "Marron", "Rojo", "Rosa", "Naranja", "Amarillo", "Verde", "Azul", "Morado", "Dorado", "Plateado", "Estampado"];
+        const colorIA = resultado.color.toLowerCase();
+        const colorMatch = coloresDisponibles.find(c => colorIA.includes(c.toLowerCase()) || c.toLowerCase().includes(colorIA));
+        if (colorMatch) setColoresPrenda([colorMatch]);
+      }
     } catch (error) {
       console.error("Error analizando con IA:", error);
     }
