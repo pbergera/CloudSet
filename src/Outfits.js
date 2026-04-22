@@ -17,6 +17,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
   const [viajesSeleccionados, setViajesSeleccionados] = useState([]);
   const [viajesEditados, setViajesEditados] = useState([]);
   const [prendasEditadas, setPrendasEditadas] = useState([]);
+  const [errorOutfit, setErrorOutfit] = useState("");
 
   useEffect(() => {
     cargarOutfits();
@@ -75,8 +76,11 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
     );
   };
 
+  
   const guardarOutfit = async () => {
-    if (!nombreOutfit || seleccionadas.length === 0) return;
+    if (!nombreOutfit) { setErrorOutfit("El nombre del outfit es obligatorio."); return; }
+    if (seleccionadas.length === 0) { setErrorOutfit("Selecciona al menos una prenda."); return; }
+    setErrorOutfit("");
     const { error } = await supabase.from("outfits").insert({
       usuario_id: usuario.id,
       nombre: nombreOutfit,
@@ -290,6 +294,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
               </div>
             ))}
           </div>
+          {errorOutfit && <p style={{ fontSize: "13px", color: "#cc3333", marginBottom: "10px" }}>{errorOutfit}</p>}
           <button onClick={guardarOutfit} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>
             Guardar outfit
           </button>

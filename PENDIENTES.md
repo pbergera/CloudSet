@@ -82,14 +82,11 @@
 - Sí me deja vincular un outfit a un viaje pero luego en la pestaña de viajes no se ha actualizado el viaje con el Outfit y la maleta
 - Al editar un outfit, quitar la línea de "Evento o viaje"
 - Al editar un outfit, poder vincularlo a un viaje.
+- Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
 
 ### 🔧 Pendiente
-- Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
-- Algunos outfits en lugar del momento, aparece un []
-
-
-
-
+- En general, si estoy creando o editando algo y me falta rellenar un campo obligatorio o lo estoy rellenando mal, que me avise. Ahora mismo lo que hace es que no te deja guardar pero no sabes por qué.
+- si tengo un outfit que solo tiene una prenda, y borro esa prenda, no se borra el outfit. Ver cómo lo gestionamos, no tiene sentido un outfit vacío. Quizá que avise: este outfit se ha quedado sin prenda principal, quieres borrarlo?
 
 ---
 
@@ -109,6 +106,7 @@
 - Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
 - Valorar que no sea obligatorio el lugar en un viaje
 - Cambiar nombre a "viaje o evento"
+- Cuando borro un Viaje, tarda un poco en desaparecer en el seleccionable de los outfits.
 ---
 
 ## 👤 PERFIL & CUENTA
