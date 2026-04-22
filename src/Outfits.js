@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
 
 
-function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
+function Outfits({ usuario, prendas, viajes, onRefrescarViajes, onRefrescarPrendas }) {
   const [outfits, setOutfits] = useState([]);
   const [creando, setCreando] = useState(false);
   const [nombreOutfit, setNombreOutfit] = useState("");
@@ -259,6 +259,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
                   </div>
                   <button onClick={async () => {
                     await supabase.from("prendas").update({ momentos: prendaEditandoMomento.momentos, momento: prendaEditandoMomento.momentos?.[0] || null }).eq("id", prendaEditandoMomento.id);
+                    if (onRefrescarPrendas) onRefrescarPrendas();
                     setPrendaEditandoMomento(null);
                   }} style={{ fontSize: "12px", padding: "5px 12px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "6px", cursor: "pointer" }}>
                     Guardar
