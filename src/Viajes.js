@@ -243,7 +243,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
                           <p style={{ fontSize: "12px", color: "#888", marginBottom: "6px" }}>Tiempo en {v.destino}:</p>
                           <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px" }}>
                             {tiempoViaje[v.id].time.map((dia, i) => {
-                              const { icono, texto } = descripcionTiempo(tiempoViaje[v.id].weathercode[i]);
+                              const { icono } = descripcionTiempo(tiempoViaje[v.id].weathercode[i]);
                               const fecha = new Date(dia).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" });
                               return (
                                 <div key={dia} style={{ textAlign: "center", minWidth: "60px", background: "#f5f5f3", borderRadius: "8px", padding: "8px 4px" }}>
