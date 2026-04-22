@@ -58,8 +58,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   };
 
   const guardarViaje = async () => {
-    if (!nombre) { setErrorViaje("El nombre del viaje es obligatorio."); return; }
-    if (!destino) { setErrorViaje("El destino es obligatorio."); return; }
+    if (!nombre) { setErrorViaje("El nombre es obligatorio."); return; }
     setErrorViaje("");
     const { error } = await supabase.from("viajes").insert({
       usuario_id: usuario.id,
@@ -113,7 +112,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
       {!creando ? (
         <>
           <div className="card">
-            <h2>Mis viajes</h2>
+            <h2>Mis viajes y eventos</h2>
             <p style={{ fontSize: "13px", color: "#888", marginBottom: "12px" }}>Planifica tu maleta para cada viaje o evento asignando outfits.</p>
             <button onClick={() => setCreando(true)} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>
               + Nuevo viaje o evento
@@ -188,7 +187,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
       {viajeEditando && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.4)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100 }}>
           <div style={{ background: "white", borderRadius: "12px", padding: "1.25rem", width: "300px" }}>
-            <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar viaje</h2>
+            <h2 style={{ fontSize: "15px", fontWeight: "500", marginBottom: "14px" }}>Editar viaje o evento</h2>
             <input type="text" value={nombreEditado} onChange={(e) => setNombreEditado(e.target.value)} placeholder="Nombre" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
             <input type="text" value={destinoEditado} onChange={(e) => setDestinoEditado(e.target.value)} placeholder="Destino" style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }} />
             <div style={{ display: "flex", gap: "8px", marginBottom: "14px" }}>
@@ -210,7 +209,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
         </>
       ) : (
         <div className="card">
-          <h2>Nuevo viaje</h2>
+          <h2>Nuevo viaje o evento</h2>
           <input
             type="text"
             placeholder="Nombre (ej: Vacaciones verano)"

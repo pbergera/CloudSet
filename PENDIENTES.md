@@ -83,10 +83,11 @@
 - Al editar un outfit, quitar la línea de "Evento o viaje"
 - Al editar un outfit, poder vincularlo a un viaje.
 - Editar las prendas que pertenecen a un outfit ya creado (añadir, quitar, cambiar)
-
-### 🔧 Pendiente
 - En general, si estoy creando o editando algo y me falta rellenar un campo obligatorio o lo estoy rellenando mal, que me avise. Ahora mismo lo que hace es que no te deja guardar pero no sabes por qué.
 - si tengo un outfit que solo tiene una prenda, y borro esa prenda, no se borra el outfit. Ver cómo lo gestionamos, no tiene sentido un outfit vacío. Quizá que avise: este outfit se ha quedado sin prenda principal, quieres borrarlo?
+
+### 🔧 Pendiente
+
 
 ---
 
