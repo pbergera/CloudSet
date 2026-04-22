@@ -51,6 +51,7 @@ function Outfits({ usuario, prendas, viajes, onRefrescarViajes }) {
 
   const guardarEdicionOutfit = async () => {
    if (!nombreEditado) { setErrorOutfit("El nombre del outfit es obligatorio."); return; }
+   if (prendasEditadas.length === 0) { setErrorOutfit("El outfit debe tener al menos una prenda."); return; }
    setErrorOutfit("");
    await supabase.from("outfits").update({
     nombre: nombreEditado,
