@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./supabase";
+import { CATEGORIAS } from "./categorias";
 
 function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViajes }) {
   const [viajes, setViajes] = useState([]);
@@ -46,7 +47,6 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
 
   const guardarEdicionViaje = async () => {
    if (!nombreEditado) { setErrorViaje("El nombre del viaje es obligatorio."); return; }
-   if (!destinoEditado) { setErrorViaje("El destino es obligatorio."); return; }
    setErrorViaje("");
    await supabase.from("viajes").update({
     nombre: nombreEditado,
@@ -272,19 +272,34 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
                             <span style={{ fontSize: "13px", flex: 1, fontWeight: "500" }}>Mi maleta</span>
                             <span style={{ fontSize: "10px", color: "#aaa" }}>{seccionesAbiertas[`${v.id}-maleta`] ? "▲" : "▼"}</span>
                           </div>
+
                           {seccionesAbiertas[`${v.id}-maleta`] && (
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", paddingTop: "8px" }}>
-                              {[...new Set(todosOutfits.flatMap(o => o.prendas || []))].map(id => {
-                                const prenda = prendas.find(p => p.id === id);
-                                return prenda ? (
-                                  <div key={id} style={{ textAlign: "center" }}>
-                                    <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
-                                    <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                            <div style={{ paddingTop: "8px" }}>
+                              {CATEGORIAS.map(grupo => {
+                                const opcionesGrupo = grupo.opciones
+                                  ? grupo.opciones
+                                  : grupo.subgrupos.flatMap(s => s.opciones ? s.opciones : [s.subgrupo]);
+                                const prendasGrupo = [...new Set(todosOutfits.flatMap(o => o.prendas || []))]
+                                  .map(id => prendas.find(p => p.id === id))
+                                  .filter(p => p && opcionesGrupo.includes(p.tipo));
+                                if (prendasGrupo.length === 0) return null;
+                                return (
+                                  <div key={grupo.grupo} style={{ marginBottom: "12px" }}>
+                                    <div style={{ fontSize: "11px", fontWeight: "600", color: "#2c2c2a", letterSpacing: "0.06em", marginBottom: "6px", paddingBottom: "4px", borderBottom: "1px solid #e0ddd6" }}>{grupo.grupo}</div>
+                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
+                                      {prendasGrupo.map(prenda => (
+                                        <div key={prenda.id} style={{ textAlign: "center" }}>
+                                          <img src={prenda.foto_url} alt={prenda.tipo} style={{ width: "52px", height: "52px", objectFit: "cover", borderRadius: "6px", border: "1px solid #e0ddd6", display: "block" }} />
+                                          <div style={{ fontSize: "10px", color: "#aaa", marginTop: "2px" }}>{prenda.tipo}</div>
+                                        </div>
+                                      ))}
+                                    </div>
                                   </div>
-                                ) : null;
+                                );
                               })}
                             </div>
                           )}
+
                         </div>
                       </>
                     );
