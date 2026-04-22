@@ -23,6 +23,8 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   const [seccionesAbiertas, setSeccionesAbiertas] = useState({});
   const [planesEditados, setPlanesEditados] = useState([]);
   const [tiempoViaje, setTiempoViaje] = useState({});
+  const [sugerenciasDestino, setSugerenciasDestino] = useState([]);
+  const [buscandoDestino, setBuscandoDestino] = useState(false);
   
 
   useEffect(() => {
@@ -171,6 +173,20 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     if (code <= 77) return { texto: "Nieve", icono: "❄️" };
     if (code <= 82) return { texto: "Chubascos", icono: "🌦️" };
     return { texto: "Tormenta", icono: "⛈️" };
+  };
+
+  const buscarDestino = async (texto) => {
+    setDestino(texto);
+    if (texto.length < 3) { setSugerenciasDestino([]); return; }
+    setBuscandoDestino(true);
+    try {
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(texto)}&format=json&limit=5&accept-language=es`);
+      const data = await res.json();
+      setSugerenciasDestino(data.map(r => r.display_name));
+    } catch (e) {
+      setSugerenciasDestino([]);
+    }
+    setBuscandoDestino(false);
   };
 
   const cargarOutfitsDeViaje = async (viajeId) => {
@@ -447,13 +463,30 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
             onChange={(e) => setNombre(e.target.value)}
             style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
           />
-          <input
-            type="text"
-            placeholder="Destino"
-            value={destino}
-            onChange={(e) => setDestino(e.target.value)}
-            style={{ width: "100%", marginBottom: "10px", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
-          />
+          
+          <div style={{ position: "relative", marginBottom: "10px" }}>
+            <input
+              type="text"
+              placeholder="Destino"
+              value={destino}
+              onChange={(e) => buscarDestino(e.target.value)}
+              style={{ width: "100%", padding: "9px 12px", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px" }}
+            />
+            {buscandoDestino && <div style={{ fontSize: "12px", color: "#aaa", padding: "4px 12px" }}>Buscando...</div>}
+            {sugerenciasDestino.length > 0 && (
+              <div style={{ position: "absolute", top: "100%", left: 0, right: 0, background: "white", border: "1px solid #e0ddd6", borderRadius: "8px", zIndex: 200, maxHeight: "200px", overflowY: "auto", marginTop: "2px" }}>
+                {sugerenciasDestino.map((s, i) => (
+                  <div key={i} onClick={() => { setDestino(s); setSugerenciasDestino([]); }}
+                    style={{ padding: "8px 12px", fontSize: "13px", cursor: "pointer", borderBottom: "1px solid #f0ede6" }}
+                    onMouseEnter={e => e.currentTarget.style.background = "#f5f5f3"}
+                    onMouseLeave={e => e.currentTarget.style.background = "white"}>
+                    {s}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div style={{ display: "flex", gap: "8px", marginBottom: "10px" }}>
             <div style={{ flex: 1 }}>
               <label style={{ fontSize: "12px", color: "#888", display: "block", marginBottom: "4px" }}>Desde</label>
