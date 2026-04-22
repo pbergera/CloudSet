@@ -15,6 +15,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   const [destinoEditado, setDestinoEditado] = useState("");
   const [fechaInicioEditada, setFechaInicioEditada] = useState("");
   const [fechaFinEditada, setFechaFinEditada] = useState("");
+  const [errorViaje, setErrorViaje] = useState("");
 
   useEffect(() => {
     cargarViajes();
@@ -54,7 +55,9 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
   };
 
   const guardarViaje = async () => {
-    if (!nombre || !destino) return;
+    if (!nombre) { setErrorViaje("El nombre del viaje es obligatorio."); return; }
+    if (!destino) { setErrorViaje("El destino es obligatorio."); return; }
+    setErrorViaje("");
     const { error } = await supabase.from("viajes").insert({
       usuario_id: usuario.id,
       nombre,
@@ -267,6 +270,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits }) {
             </>
           )}
 
+          {errorViaje && <p style={{ fontSize: "13px", color: "#cc3333", marginBottom: "10px" }}>{errorViaje}</p>}
           <button onClick={guardarViaje} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px", marginTop: "10px" }}>
             Guardar viaje
           </button>
