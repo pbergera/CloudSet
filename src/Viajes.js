@@ -20,6 +20,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   const [outfitsDelViaje, setOutfitsDelViaje] = useState([]);
   const [planes, setPlanes] = useState([]);
   const [seccionesAbiertas, setSeccionesAbiertas] = useState({});
+  const [planesEditados, setPlanesEditados] = useState([]);
   
 
   useEffect(() => {
@@ -51,7 +52,8 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
     nombre: nombreEditado,
     destino: destinoEditado,
     fecha_inicio: fechaInicioEditada || null,
-    fecha_fin: fechaFinEditada || null
+    fecha_fin: fechaFinEditada || null,
+    planes: planesEditados
    }).eq("id", viajeEditando.id);
    await cargarViajes();
    setViajeEditando(null);
@@ -64,13 +66,14 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
   };
 
   const togglePlan = (momento, cantidad, esEdicion = false) => {
-    const setter = setPlanes;
+    const setter = esEdicion ? setPlanesEditados : setPlanes;
     setter(prev => {
       const existe = prev.find(p => p.momento === momento);
       if (existe) {
         if (cantidad === 0) return prev.filter(p => p.momento !== momento);
         return prev.map(p => p.momento === momento ? { ...p, cantidad } : p);
       }
+      if (cantidad <= 0) return prev;
       return [...prev, { momento, cantidad }];
     });
   };
@@ -179,7 +182,7 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
              <div style={{ fontWeight: "500", fontSize: "14px", cursor: "pointer" }} onClick={() => setViajeAbierto(viajeAbierto === v.id ? null : v.id)}>{v.nombre}</div>
              <div style={{ display: "flex", gap: "10px" }}>
-                  <div onClick={() => { setViajeEditando(v); setNombreEditado(v.nombre); setDestinoEditado(v.destino); setFechaInicioEditada(v.fecha_inicio || ""); setFechaFinEditada(v.fecha_fin || ""); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
+                  <div onClick={() => { setViajeEditando(v); setNombreEditado(v.nombre); setDestinoEditado(v.destino || ""); setFechaInicioEditada(v.fecha_inicio || ""); setFechaFinEditada(v.fecha_fin || ""); setPlanesEditados(v.planes || []); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Editar</div>
                   <div onClick={async () => { setViajeEditandoOutfits(v.id); await cargarOutfitsDeViaje(v.id); }} style={{ fontSize: "11px", color: "#2c2c2a", cursor: "pointer" }}>Outfits</div>
                   <div onClick={() => eliminarViaje(v.id)} style={{ fontSize: "11px", color: "#cc3333", cursor: "pointer" }}>Eliminar</div>
                 </div>
@@ -310,6 +313,24 @@ function Viajes({ usuario, outfits, prendas, onRefrescarOutfits, onRefrescarViaj
               </div>
             </div>
             {errorViaje && <p style={{ fontSize: "13px", color: "#cc3333", marginBottom: "10px" }}>{errorViaje}</p>}
+            
+            <div style={{ marginBottom: "14px" }}>
+              <p style={{ fontSize: "13px", color: "#888", marginBottom: "8px" }}>Planifica tus conjuntos:</p>
+              {["Casual", "Arreglado", "Deportivo", "Noche", "Día", "Playa", "Trabajo", "Formal"].map(m => {
+                const plan = planesEditados.find(p => p.momento === m);
+                return (
+                  <div key={m} style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
+                    <span style={{ fontSize: "13px", flex: 1 }}>{m}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <div onClick={() => togglePlan(m, (plan?.cantidad || 0) - 1, true)} style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #e0ddd6", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "16px", color: "#888" }}>−</div>
+                      <span style={{ fontSize: "14px", fontWeight: "500", minWidth: "20px", textAlign: "center" }}>{plan?.cantidad || 0}</span>
+                      <div onClick={() => togglePlan(m, (plan?.cantidad || 0) + 1, true)} style={{ width: "24px", height: "24px", borderRadius: "50%", border: "1px solid #e0ddd6", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", fontSize: "16px", color: "#888" }}>+</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
             <button onClick={guardarEdicionViaje} style={{ width: "100%", padding: "10px", background: "#2c2c2a", color: "white", border: "none", borderRadius: "8px", fontSize: "14px", cursor: "pointer", marginBottom: "8px" }}>Guardar</button>
             <button onClick={() => setViajeEditando(null)} style={{ width: "100%", padding: "10px", background: "white", color: "#888", border: "1px solid #e0ddd6", borderRadius: "8px", fontSize: "14px", cursor: "pointer" }}>Cancelar</button>
           </div>

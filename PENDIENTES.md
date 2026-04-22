@@ -105,11 +105,12 @@
 - Cambiar nombre a "viaje o evento"
 - Cuando borro un Viaje, tarda un poco en desaparecer en el seleccionable de los outfits.
 - Editar outfits asignados a un viaje (añadir, quitar, cambiar)
-
-### 🔧 Pendiente
 - Organizar outfits dentro del viaje por tipo de plan
 - Poder organizar la maleta en función de planes. Por ejemplo: 3 conjuntos de noche, 5 de playa, 2 de día, etc.
 
+### 🔧 Pendiente
+- en Mi Maleta, que las prendas se vean con las categorías en el orden que habíamos hecho al principio, con los dos grupos (prendas y accesorios) y los subgrupos y tal.
+- Edición de viajes: poder editar los planes
 
 ---
 
