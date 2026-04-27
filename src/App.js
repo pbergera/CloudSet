@@ -8,6 +8,7 @@ import Viajes from "./Viajes";
 import SelectorCategoria from "./SelectorCategoria";
 import { CATEGORIAS } from "./categorias";
 import { TODAS_CATEGORIAS } from "./categorias";
+import Estilista from "./Estilista";
 
 function App() {
   const [seccion, setSeccion] = useState("armario");
@@ -264,8 +265,9 @@ const guardarEdicion = async () => {
       {[
         { id: "armario", label: "Armario" },
         { id: "outfits", label: "Outfits" },
-        { id: "viajes", label: "Viajes y eventos" }
-      ].map((s) => (
+        { id: "viajes", label: "Viajes" },
+        { id: "estilista", label: "Estilista ✨" }
+       ].map((s) => (
         <button
          key={s.id}
          className={`nav-btn ${seccion === s.id ? "active" : ""}`}
@@ -603,6 +605,11 @@ const guardarEdicion = async () => {
     {seccion === "cuenta" && (
      <Perfil usuario={usuario} onCerrarSesion={cerrarSesion} onEstilosActualizados={(url) => { setFotoPerfil(url); cargarPerfil(); }} />
     )}
+
+    {seccion === "estilista" && (
+      <Estilista usuario={usuario} prendas={prendas} outfits={outfitsList} viajes={viajesList} />
+    )}
+
     </div>
   );
 }

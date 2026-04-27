@@ -113,6 +113,7 @@
 - Edición de viajes: poder editar los planes
 - en Mi Maleta, que las prendas se vean con las categorías en el orden que habíamos hecho al principio, con los dos grupos (prendas y accesorios) y los subgrupos y tal.
 - Edición de viajes: me dice que el destino es obligatorio
+- Mostrar el tiempo en el lugar del viaje
 
 ### 🔧 Pendiente
 
