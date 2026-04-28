@@ -30,7 +30,7 @@ ACCIONES: [JSON array con acciones sugeridas, o [] si no hay acciones]
 
 Las acciones posibles son:
 - Crear outfit: {"tipo":"crear_outfit","nombre":"nombre del outfit","prendas":["id1","id2"],"momentos":["Día"]}
-- Crear viaje: {"tipo":"crear_viaje","nombre":"nombre viaje","destino":"ciudad","outfits":["id1","id2"]}
+- Crear viaje: {"tipo":"crear_viaje","nombre":"nombre viaje","destino":"ciudad","fecha_inicio":"YYYY-MM-DD","fecha_fin":"YYYY-MM-DD","outfits":["id1","id2"]}
 
 Ejemplo de respuesta:
 TEXTO: Para una cena informal te recomiendo combinar tu blazer negro con los vaqueros azules.
@@ -55,6 +55,8 @@ ACCIONES: [{"tipo":"crear_outfit","nombre":"Cena informal","prendas":["id-blazer
         usuario_id: usuario.id,
         nombre: accion.nombre,
         destino: accion.destino || null,
+        fecha_inicio: accion.fecha_inicio || null,
+        fecha_fin: accion.fecha_fin || null,
         outfits: accion.outfits || []
       }).select().single();
       if (!error && nuevoViaje && accion.outfits?.length > 0) {
