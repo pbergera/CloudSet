@@ -93,9 +93,9 @@ ACCIONES: [{"tipo":"crear_outfit","nombre":"Cena informal","prendas":["id-blazer
 
       // parsear texto y acciones
       const textoMatch = respuestaCompleta.match(/TEXTO:([\s\S]*?)(?=ACCIONES:|$)/);
-      const accionesMatch = respuestaCompleta.match(/ACCIONES:\s*(\[[\s\S]*?\])/);
+      const accionesMatch = respuestaCompleta.match(/ACCIONES:\s*(\[[\s\S]*\])/);
 
-      const texto = textoMatch ? textoMatch[1].trim() : respuestaCompleta;
+      const texto = textoMatch ? textoMatch[1].trim() : respuestaCompleta.replace(/ACCIONES:\s*\[[\s\S]*\]/, "").trim();
       let acciones = [];
       if (accionesMatch) {
         try {
