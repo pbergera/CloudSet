@@ -49,13 +49,19 @@ ACCIONES: [{"tipo":"crear_outfit","nombre":"Cena informal","prendas":["id-blazer
       if (!error) {
         setMensajes(prev => [...prev, { role: "assistant", text: `✅ Outfit "${accion.nombre}" creado correctamente. Puedes verlo en la pestaña Outfits.` }]);
       }
+
     } else if (accion.tipo === "crear_viaje") {
-      const { error } = await supabase.from("viajes").insert({
+      const { data: nuevoViaje, error } = await supabase.from("viajes").insert({
         usuario_id: usuario.id,
         nombre: accion.nombre,
         destino: accion.destino || null,
         outfits: accion.outfits || []
-      });
+      }).select().single();
+      if (!error && nuevoViaje && accion.outfits?.length > 0) {
+        await supabase.from("outfit_viaje").insert(
+          accion.outfits.map(o => ({ outfit_id: o, viaje_id: nuevoViaje.id }))
+        );
+      }
       if (!error) {
         setMensajes(prev => [...prev, { role: "assistant", text: `✅ Viaje "${accion.nombre}" creado correctamente. Puedes verlo en la pestaña Viajes.` }]);
       }
