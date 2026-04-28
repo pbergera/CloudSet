@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "./supabase";
 
 function Estilista({ usuario, prendas, outfits, viajes }) {
   const [mensajes, setMensajes] = useState([
@@ -8,9 +9,9 @@ function Estilista({ usuario, prendas, outfits, viajes }) {
   const [cargando, setCargando] = useState(false);
 
   const contexto = () => {
-    const prendasTexto = prendas.map(p => `- ${p.tipo}${p.colores?.length > 0 ? ` (${p.colores.join(", ")})` : p.color ? ` (${p.color})` : ""}${p.momentos?.length > 0 ? ` [${p.momentos.join(", ")}]` : p.momento ? ` [${p.momento}]` : ""}`).join("\n");
-    const outfitsTexto = outfits.map(o => `- ${o.nombre}${o.momentos?.length > 0 ? ` [${o.momentos.join(", ")}]` : o.momento ? ` [${o.momento}]` : ""}`).join("\n");
-    const viajesTexto = viajes.map(v => `- ${v.nombre}${v.destino ? ` en ${v.destino}` : ""}${v.fecha_inicio ? ` del ${new Date(v.fecha_inicio).toLocaleDateString("es-ES")}` : ""}${v.fecha_fin ? ` al ${new Date(v.fecha_fin).toLocaleDateString("es-ES")}` : ""}`).join("\n");
+    const prendasTexto = prendas.map(p => `- ID:${p.id} ${p.tipo}${p.colores?.length > 0 ? ` (${p.colores.join(", ")})` : p.color ? ` (${p.color})` : ""}${p.momentos?.length > 0 ? ` [${p.momentos.join(", ")}]` : p.momento ? ` [${p.momento}]` : ""}`).join("\n");
+    const outfitsTexto = outfits.map(o => `- ID:${o.id} ${o.nombre}${o.momentos?.length > 0 ? ` [${o.momentos.join(", ")}]` : o.momento ? ` [${o.momento}]` : ""} prendas:[${(o.prendas || []).join(",")}]`).join("\n");
+    const viajesTexto = viajes.map(v => `- ID:${v.id} ${v.nombre}${v.destino ? ` en ${v.destino}` : ""}${v.fecha_inicio ? ` del ${new Date(v.fecha_inicio).toLocaleDateString("es-ES")}` : ""}${v.fecha_fin ? ` al ${new Date(v.fecha_fin).toLocaleDateString("es-ES")}` : ""}`).join("\n");
 
     return `Eres una estilista personal experta y amigable. Conoces el armario de la usuaria al detalle y das consejos personalizados basados en sus prendas reales.
 
@@ -23,7 +24,42 @@ ${outfitsTexto || "Sin outfits"}
 VIAJES Y EVENTOS (${viajes.length}):
 ${viajesTexto || "Sin viajes"}
 
-Responde siempre en español, de forma cercana y práctica. Cuando sugieras outfits, referencia prendas reales del armario. Sé concisa pero útil.`;
+Responde SIEMPRE en este formato exacto:
+TEXTO: [tu respuesta en español, cercana y práctica, referenciando prendas reales]
+ACCIONES: [JSON array con acciones sugeridas, o [] si no hay acciones]
+
+Las acciones posibles son:
+- Crear outfit: {"tipo":"crear_outfit","nombre":"nombre del outfit","prendas":["id1","id2"],"momentos":["Día"]}
+- Crear viaje: {"tipo":"crear_viaje","nombre":"nombre viaje","destino":"ciudad","outfits":["id1","id2"]}
+
+Ejemplo de respuesta:
+TEXTO: Para una cena informal te recomiendo combinar tu blazer negro con los vaqueros azules.
+ACCIONES: [{"tipo":"crear_outfit","nombre":"Cena informal","prendas":["id-blazer","id-vaqueros"],"momentos":["Noche"]}]`;
+  };
+
+  const ejecutarAccion = async (accion) => {
+    if (accion.tipo === "crear_outfit") {
+      const { error } = await supabase.from("outfits").insert({
+        usuario_id: usuario.id,
+        nombre: accion.nombre,
+        prendas: accion.prendas,
+        momentos: accion.momentos || [],
+        momento: accion.momentos?.[0] || null
+      });
+      if (!error) {
+        setMensajes(prev => [...prev, { role: "assistant", text: `✅ Outfit "${accion.nombre}" creado correctamente. Puedes verlo en la pestaña Outfits.` }]);
+      }
+    } else if (accion.tipo === "crear_viaje") {
+      const { error } = await supabase.from("viajes").insert({
+        usuario_id: usuario.id,
+        nombre: accion.nombre,
+        destino: accion.destino || null,
+        outfits: accion.outfits || []
+      });
+      if (!error) {
+        setMensajes(prev => [...prev, { role: "assistant", text: `✅ Viaje "${accion.nombre}" creado correctamente. Puedes verlo en la pestaña Viajes.` }]);
+      }
+    }
   };
 
   const enviar = async () => {
@@ -34,10 +70,12 @@ Responde siempre en español, de forma cercana y práctica. Cuando sugieras outf
     setCargando(true);
 
     try {
-      const historial = mensajes.map(m => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.text }]
-      }));
+      const historial = mensajes
+        .filter(m => !m.acciones)
+        .map(m => ({
+          role: m.role === "assistant" ? "model" : "user",
+          parts: [{ text: m.text }]
+        }));
 
       const response = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.REACT_APP_GEMINI_KEY}`,
@@ -51,8 +89,23 @@ Responde siempre en español, de forma cercana y práctica. Cuando sugieras outf
         }
       );
       const data = await response.json();
-      const respuesta = data.candidates?.[0]?.content?.parts?.[0]?.text || "Lo siento, no he podido procesar tu pregunta. Inténtalo de nuevo.";
-      setMensajes(prev => [...prev, { role: "assistant", text: respuesta }]);
+      const respuestaCompleta = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+      // parsear texto y acciones
+      const textoMatch = respuestaCompleta.match(/TEXTO:([\s\S]*?)(?=ACCIONES:|$)/);
+      const accionesMatch = respuestaCompleta.match(/ACCIONES:\s*(\[[\s\S]*?\])/);
+
+      const texto = textoMatch ? textoMatch[1].trim() : respuestaCompleta;
+      let acciones = [];
+      if (accionesMatch) {
+        try {
+          acciones = JSON.parse(accionesMatch[1]);
+        } catch (e) {
+          acciones = [];
+        }
+      }
+
+      setMensajes(prev => [...prev, { role: "assistant", text: texto, acciones }]);
     } catch (error) {
       setMensajes(prev => [...prev, { role: "assistant", text: "Ha ocurrido un error. Inténtalo de nuevo." }]);
     }
@@ -62,18 +115,30 @@ Responde siempre en español, de forma cercana y práctica. Cuando sugieras outf
   return (
     <div className="seccion" style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 140px)" }}>
       <div className="card" style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" }}>
-        <h2>Estilista IA</h2>
+        <h2>Estilista ✨</h2>
         <p style={{ fontSize: "13px", color: "#888", marginBottom: "4px" }}>Tu asistente personal conoce tu armario y te ayuda a combinar outfits.</p>
         {mensajes.map((m, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
-            <div style={{
-              maxWidth: "80%", padding: "10px 14px", borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
-              background: m.role === "user" ? "#2c2c2a" : "#f5f5f3",
-              color: m.role === "user" ? "white" : "#2c2c2a",
-              fontSize: "13px", lineHeight: "1.5", whiteSpace: "pre-wrap"
-            }}>
-              {m.text}
+          <div key={i}>
+            <div style={{ display: "flex", justifyContent: m.role === "user" ? "flex-end" : "flex-start" }}>
+              <div style={{
+                maxWidth: "80%", padding: "10px 14px", borderRadius: m.role === "user" ? "16px 16px 4px 16px" : "16px 16px 16px 4px",
+                background: m.role === "user" ? "#2c2c2a" : "#f5f5f3",
+                color: m.role === "user" ? "white" : "#2c2c2a",
+                fontSize: "13px", lineHeight: "1.5", whiteSpace: "pre-wrap"
+              }}>
+                {m.text}
+              </div>
             </div>
+            {m.acciones && m.acciones.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "8px", paddingLeft: "4px" }}>
+                {m.acciones.map((accion, j) => (
+                  <button key={j} onClick={() => ejecutarAccion(accion)}
+                    style={{ padding: "6px 14px", background: "white", border: "1px solid #2c2c2a", borderRadius: "20px", fontSize: "12px", cursor: "pointer", color: "#2c2c2a" }}>
+                    {accion.tipo === "crear_outfit" ? `+ Crear outfit "${accion.nombre}"` : `+ Crear viaje "${accion.nombre}"`}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         ))}
         {cargando && (
